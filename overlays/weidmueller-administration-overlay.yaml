@@ -1,0 +1,401 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist agent overlay for Weidmüller u-OS Administration API
+  version: 1.0.0
+extends: ../openapi/_original/weidmueller-administration-openapi.yml
+x-generated: '2026-10-09'
+x-method: generated
+x-source: openapi/_original/administration-openapi.yaml
+x-rationale: Adds provider documentation links and per-operation x-agent annotations (MCP candidate tool name, read-only flag,
+  required OAuth2 scopes copied from each operation security requirement) without mutating the original spec.
+actions:
+- target: $.info
+  description: Add provider docs and API Evangelist provenance.
+  update:
+    x-provider: Weidmüller
+    x-source-repository: https://github.com/weidmueller/u-os-hub-api
+    x-deployment-note: Served on the customer u-OS device; the spec servers entry is a relative base path and names no public
+      host.
+- target: $
+  description: Link the provider documentation.
+  update:
+    externalDocs:
+      description: Weidmüller u-OS online documentation
+      url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/index.html
+- target: $.paths['/firewall/active-config'].get
+  description: Annotate get_firewall_active_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_firewall_active_config
+      read_only: true
+      required_scopes:
+      - u-os-adm.firewall.readonly
+      - u-os-adm.firewall.readwrite
+- target: $.paths['/firewall/active-config'].put
+  description: Annotate set_firewall_active_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: set_firewall_active_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.firewall.readwrite
+- target: $.paths['/firewall/active-config'].patch
+  description: Annotate update_firewall_active_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: update_firewall_active_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.firewall.readwrite
+- target: $.paths['/firewall/config'].get
+  description: Annotate get_firewall_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_firewall_config
+      read_only: true
+      required_scopes:
+      - u-os-adm.firewall.readonly
+      - u-os-adm.firewall.readwrite
+- target: $.paths['/firewall/config'].put
+  description: Annotate set_firewall_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: set_firewall_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.firewall.readwrite
+- target: $.paths['/firewall/config'].patch
+  description: Annotate update_firewall_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: update_firewall_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.firewall.readwrite
+- target: $.paths['/firewall:reload'].post
+  description: Annotate reload_firewall_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: reload_firewall_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.firewall.readwrite
+- target: $.paths['/logging/entries'].get
+  description: Annotate get_logging_entries for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_logging_entries
+      read_only: true
+      required_scopes:
+      - u-os-adm.logging.readonly
+- target: $.paths['/logging/reports'].post
+  description: Annotate create_logging_report for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: create_logging_report
+      read_only: false
+      required_scopes:
+      - u-os-adm.logging.readonly
+- target: $.paths['/logging/reports/{report_id}'].get
+  description: Annotate get_logging_report for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_logging_report
+      read_only: true
+      required_scopes:
+      - u-os-adm.logging.readonly
+- target: $.paths['/logging/sources'].get
+  description: Annotate get_logging_sources for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_logging_sources
+      read_only: true
+      required_scopes:
+      - u-os-adm.logging.readonly
+- target: $.paths['/network/config'].get
+  description: Annotate get_network_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_network_config
+      read_only: true
+      required_scopes:
+      - u-os-adm.network.readonly
+      - u-os-adm.network.readwrite
+- target: $.paths['/network/config'].put
+  description: Annotate set_network_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: set_network_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.network.readwrite
+- target: $.paths['/network/config'].patch
+  description: Annotate update_network_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: update_network_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.network.readwrite
+- target: $.paths['/network/state'].get
+  description: Annotate get_network_state for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_network_state
+      read_only: true
+      required_scopes:
+      - u-os-adm.network.readonly
+      - u-os-adm.network.readwrite
+- target: $.paths['/network:factory-reset'].post
+  description: Annotate network_factory_reset for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: network_factory_reset
+      read_only: false
+      required_scopes:
+      - u-os-adm.network.readwrite
+- target: $.paths['/operations/{operation_id}'].get
+  description: Annotate get_operation for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_operation
+      read_only: true
+      required_scopes: []
+- target: $.paths['/ping'].get
+  description: Annotate ping for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: ping
+      read_only: true
+      required_scopes: []
+- target: $.paths['/realtime/config'].get
+  description: Annotate get_realtime_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_realtime_config
+      read_only: true
+      required_scopes:
+      - u-os-adm.realtime.readonly
+      - u-os-adm.realtime.readwrite
+- target: $.paths['/realtime/config'].put
+  description: Annotate set_realtime_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: set_realtime_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.realtime.readwrite
+- target: $.paths['/realtime/state'].get
+  description: Annotate get_realtime_state for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_realtime_state
+      read_only: true
+      required_scopes:
+      - u-os-adm.realtime.readonly
+      - u-os-adm.realtime.readwrite
+- target: $.paths['/recovery:factory-reset'].post
+  description: Annotate recovery_factory_reset for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: recovery_factory_reset
+      read_only: false
+      required_scopes:
+      - u-os-adm.recovery.readwrite
+- target: $.paths['/security/config'].get
+  description: Annotate get_security_settings for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_security_settings
+      read_only: true
+      required_scopes:
+      - u-os-adm.security.readonly
+      - u-os-adm.security.readwrite
+- target: $.paths['/security/config'].put
+  description: Annotate set_security_settings for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: set_security_settings
+      read_only: false
+      required_scopes:
+      - u-os-adm.security.readwrite
+- target: $.paths['/serial-interfaces/config'].get
+  description: Annotate get_serial_interface_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_serial_interface_config
+      read_only: true
+      required_scopes:
+      - u-os-adm.serial-interfaces.readonly
+      - u-os-adm.serial-interfaces.readwrite
+- target: $.paths['/serial-interfaces/config'].put
+  description: Annotate set_serial_interface_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: set_serial_interface_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.serial-interfaces.readwrite
+- target: $.paths['/serial-interfaces/config'].patch
+  description: Annotate update_serial_interface_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: update_serial_interface_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.serial-interfaces.readwrite
+- target: $.paths['/serial-interfaces/state'].get
+  description: Annotate get_serial_interface_state for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_serial_interface_state
+      read_only: true
+      required_scopes:
+      - u-os-adm.serial-interfaces.readonly
+      - u-os-adm.serial-interfaces.readwrite
+- target: $.paths['/syslog/certificates'].get
+  description: Annotate get_certificates for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_certificates
+      read_only: true
+      required_scopes:
+      - u-os-adm.syslog.readonly
+      - u-os-adm.syslog.readwrite
+- target: $.paths['/syslog/certificates'].put
+  description: Annotate set_certificates for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: set_certificates
+      read_only: false
+      required_scopes:
+      - u-os-adm.syslog.readwrite
+- target: $.paths['/syslog/certificates'].patch
+  description: Annotate patch_certificates for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: patch_certificates
+      read_only: false
+      required_scopes:
+      - u-os-adm.syslog.readwrite
+- target: $.paths['/syslog/config'].get
+  description: Annotate get_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_config
+      read_only: true
+      required_scopes:
+      - u-os-adm.syslog.readonly
+      - u-os-adm.syslog.readwrite
+- target: $.paths['/syslog/config'].put
+  description: Annotate set_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: set_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.syslog.readwrite
+- target: $.paths['/syslog/state'].get
+  description: Annotate get_state for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_state
+      read_only: true
+      required_scopes:
+      - u-os-adm.syslog.readonly
+      - u-os-adm.syslog.readwrite
+- target: $.paths['/system/disks'].get
+  description: Annotate get_system_disks for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_system_disks
+      read_only: true
+      required_scopes:
+      - u-os-adm.system.readonly
+      - u-os-adm.system.readwrite
+- target: $.paths['/system/info'].get
+  description: Annotate get_system_info for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_system_info
+      read_only: true
+      required_scopes:
+      - u-os-adm.system.readonly
+      - u-os-adm.system.readwrite
+- target: $.paths['/system/nameplate'].get
+  description: Annotate get_system_nameplate for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_system_nameplate
+      read_only: true
+      required_scopes:
+      - u-os-adm.system.readonly
+      - u-os-adm.system.readwrite
+- target: $.paths['/system:reboot'].post
+  description: Annotate system_reboot for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: system_reboot
+      read_only: false
+      required_scopes:
+      - u-os-adm.system.readwrite
+- target: $.paths['/time/config'].get
+  description: Annotate get_time_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_time_config
+      read_only: true
+      required_scopes:
+      - u-os-adm.time.readonly
+      - u-os-adm.time.readwrite
+- target: $.paths['/time/config'].put
+  description: Annotate set_time_config for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: set_time_config
+      read_only: false
+      required_scopes:
+      - u-os-adm.time.readwrite
+- target: $.paths['/time/state'].get
+  description: Annotate get_time_state for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_time_state
+      read_only: true
+      required_scopes:
+      - u-os-adm.time.readonly
+      - u-os-adm.time.readwrite
+- target: $.paths['/time/timezones'].get
+  description: Annotate list_timezones for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: list_timezones
+      read_only: true
+      required_scopes:
+      - u-os-adm.time.readonly
+      - u-os-adm.time.readwrite
+- target: $.paths['/update/config'].get
+  description: Annotate get_update_settings for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_update_settings
+      read_only: true
+      required_scopes:
+      - u-os-adm.update.readonly
+      - u-os-adm.update.readwrite
+- target: $.paths['/update/config'].put
+  description: Annotate set_update_settings for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: set_update_settings
+      read_only: false
+      required_scopes:
+      - u-os-adm.update.readwrite
+- target: $.paths['/update/config'].patch
+  description: Annotate update_update_settings for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: update_update_settings
+      read_only: false
+      required_scopes:
+      - u-os-adm.update.readwrite

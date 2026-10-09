@@ -1,0 +1,29 @@
+generated: '2026-10-09'
+method: searched
+source: https://github.com/weidmueller/u-os-hub-api/blob/main/openapi/README.adoc
+standards:
+- id: rfc9457
+  conforms: true
+  evidence: 'openapi/weidmueller-administration-openapi.yml components.schemas.HttpErrorPayload: "Common error payload structure for HTTP responses.
+    Based on RFC 9457", served as application/problem+json on 50 responses. The Variable-HTTP API returns text/plain errors.'
+- id: rfc7396
+  conforms: true
+  evidence: 'openapi/README.adoc: "use PATCH with JSON Merge Patch for partial updates", linking datatracker.ietf.org/doc/rfc7396.'
+- id: semver
+  conforms: true
+  evidence: 'openapi/README.adoc: "The HTTP APIs follow Semantic Versioning. The major API version is part of the base URL, such as /api/v1."'
+- id: oauth2
+  conforms: true
+  evidence: OAuth2 clientCredentials securityScheme (tokenUrl /oauth2/token) in both OpenAPI specs.
+- id: pagination
+  conforms: partial
+  evidence: Cursor pagination (cursor and limit) only on GET /logging/entries.
+- id: idempotency
+  conforms: false
+  evidence: No Idempotency-Key mechanism. Optimistic locking uses If-Match/ETag on some configuration endpoints.
+- id: asyncapi-nats
+  conforms: true
+  evidence: The Variable-NATS-API is described in AsyncAPI 2.6.0 (variable-nats-api/variable-nats-asyncapi.yaml) over NATS with FlatBuffers payloads.
+- id: openapi-3.1
+  conforms: true
+  evidence: the document declares 3.1.0

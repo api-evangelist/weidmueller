@@ -1,0 +1,397 @@
+openapi: 3.2.0
+info:
+  title: Weidmueller Update API
+  version: 1.5.0-next
+  contact:
+    name: Weidmüller
+  license:
+    name: MIT
+    identifier: MIT
+  description: 'Operations tagged update across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /u-os-adm/api/v1
+tags:
+- name: Update
+  description: API for u-OS update settings
+paths:
+  /update/config:
+    get:
+      tags:
+      - Update
+      summary: Get the update configuration for the system
+      description: The update configuration contains settings related to updating a u-OS device.
+      operationId: get_update_settings
+      responses:
+        '200':
+          description: Update configuration found successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSettings'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.update.readonly
+      - OAuth2:
+        - u-os-adm.update.readwrite
+    put:
+      tags:
+      - Update
+      summary: Set the update configuration for the system
+      description: 'The update configuration contains settings related to updating a u-OS device.
+
+        Updating the configuration will restart the update service to apply new settings.'
+      operationId: set_update_settings
+      requestBody:
+        description: Update configuration to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSettings'
+        required: true
+      responses:
+        '200':
+          description: Update configuration updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSettings'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.update.readwrite
+    patch:
+      tags:
+      - Update
+      summary: Modify the update configuration of the device
+      description: 'This endpoint modifies the update configuration of the device by applying a JSON merge patch ()
+
+        to the current configuration.
+
+        Will return the updated configuration after applying the patch on success.'
+      operationId: update_update_settings
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/PartialUpdateSettings'
+        required: true
+      responses:
+        '200':
+          description: The updated configuration after applying the merge patch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSettings'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.update.readwrite
+    servers:
+    - url: /u-os-adm/api/v1
+components:
+  schemas:
+    PartialRemovableMediaUpdateConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: 'True if removable media updates are enabled, false otherwise.
+
+
+            Note: Removable media updates are always enabled before initial setup is complete.
+
+            This value shows only the state after the initial setup.'
+        recipe_signing:
+          $ref: '#/components/schemas/PartialRecipeSigning'
+          description: Settings related to signing of removable media updates.
+    GpgKey:
+      type: object
+      description: The content of a GPG public key file in ASCII armor format.
+      required:
+      - content
+      properties:
+        content:
+          type: string
+          description: 'Hint: Newlines are forbidden in JSON strings, so you need to escape them.'
+          example: '-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+
+            ...
+
+            -----END PGP PUBLIC KEY BLOCK-----'
+    PartialSignedUpdateConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: True if signed updates are enabled, false otherwise.
+        preinstalled_gpg_keys:
+          $ref: '#/components/schemas/PartialPreinstalledGpgKeysEnabled'
+          description: 'Can be used to enable or disable preinstalled Preinstalled GPG keys.
+
+            This can be useful e.g. to only allow custom, self signed updates to the device.'
+        user_gpg_keys:
+          type: object
+          description: User specific GPG public keys that are used to verify software updates.
+          additionalProperties: true
+          example:
+            another-gpg-key:
+              content: '-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+
+                ...
+
+                -----END PGP PUBLIC KEY BLOCK-----'
+            delete-me: null
+    PreinstalledGpgKeysEnabled:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: 'True if Preinstalled GPG keys are enabled, false otherwise.
+
+
+            All devices come with preinstalled preinstalled GPG keys to verify updates.
+
+            If this is set to false, those keys will be ignored during update verification.
+
+            User must upload their own GPG keys to verify updates in this case.'
+    PartialUpdateSettings:
+      type: object
+      description: Represents the update configuration for the system used in get and put. (PATCH)
+      properties:
+        removable_media_update:
+          $ref: '#/components/schemas/PartialRemovableMediaUpdateConfig'
+        signed_update:
+          $ref: '#/components/schemas/PartialSignedUpdateConfig'
+    SignedUpdateConfig:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: True if signed updates are enabled, false otherwise.
+        preinstalled_gpg_keys:
+          $ref: '#/components/schemas/PreinstalledGpgKeysEnabled'
+          description: 'Can be used to enable or disable preinstalled Preinstalled GPG keys.
+
+            This can be useful e.g. to only allow custom, self signed updates to the device.'
+        user_gpg_keys:
+          type: object
+          description: User specific GPG public keys that are used to verify software updates.
+          additionalProperties:
+            $ref: '#/components/schemas/GpgKey'
+          propertyNames:
+            type: string
+            description: A GPG key ID that acts as a unique identifier for the key
+            examples:
+            - custom-gpg-key
+            maxLength: 255
+            minLength: 1
+            pattern: ^[a-z][a-z\-0-9]*$
+          example:
+            another-gpg-key:
+              content: '-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+
+                ...
+
+                -----END PGP PUBLIC KEY BLOCK-----'
+    RemovableMediaUpdateConfig:
+      type: object
+      required:
+      - enabled
+      - recipe_signing
+      properties:
+        enabled:
+          type: boolean
+          description: 'True if removable media updates are enabled, false otherwise.
+
+
+            Note: Removable media updates are always enabled before initial setup is complete.
+
+            This value shows only the state after the initial setup.'
+        recipe_signing:
+          $ref: '#/components/schemas/RecipeSigning'
+          description: Settings related to signing of removable media updates.
+    HttpErrorPayload:
+      type: object
+      description: 'Common error payload structure for HTTP responses.
+
+
+        Based on [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457)'
+      required:
+      - type
+      - title
+      - status
+      properties:
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Optional details about the error
+          example: 'Low Level OS Error #1234'
+        instance:
+          type:
+          - string
+          - 'null'
+          format: uri-reference
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: null
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code generated by the origin server for this occurrence of the problem
+          example: 500
+          maximum: 599
+          minimum: 100
+        title:
+          type: string
+          description: Human-readable error message.
+          example: Something went wrong in the backend.
+        type:
+          type: string
+          format: uri-reference
+          description: 'A URI reference that identifies the problem type
+
+
+            The last part of the URI is always a `ErrorId`'
+          example: /u-os-adm/api/v1/errors/set-security-settings
+    PartialRecipeSigning:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: 'True if removable media update signing is enabled, false otherwise.
+
+
+            If enabled, the recipe file of the removable media update must be signed with a GPG key that
+
+            is added to the `user_gpg_keys` list in order to be accepted by the system.
+
+
+            Note: Removable media update signing is always disabled before initial setup is complete.'
+        user_gpg_keys:
+          type: object
+          description: User specific GPG public keys that are used to verify removable media updates.
+          additionalProperties: true
+          example:
+            another-gpg-key:
+              content: '-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+
+                ...
+
+                -----END PGP PUBLIC KEY BLOCK-----'
+            delete-me: null
+    RecipeSigning:
+      type: object
+      required:
+      - enabled
+      - user_gpg_keys
+      properties:
+        enabled:
+          type: boolean
+          description: 'True if removable media update signing is enabled, false otherwise.
+
+
+            If enabled, the recipe file of the removable media update must be signed with a GPG key that
+
+            is added to the `user_gpg_keys` list in order to be accepted by the system.
+
+
+            Note: Removable media update signing is always disabled before initial setup is complete.'
+        user_gpg_keys:
+          type: object
+          description: User specific GPG public keys that are used to verify removable media updates.
+          additionalProperties:
+            $ref: '#/components/schemas/GpgKey'
+          propertyNames:
+            type: string
+            description: A GPG key ID that acts as a unique identifier for the key
+            examples:
+            - custom-gpg-key
+            maxLength: 255
+            minLength: 1
+            pattern: ^[a-z][a-z\-0-9]*$
+          example:
+            another-gpg-key:
+              content: '-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+
+                ...
+
+                -----END PGP PUBLIC KEY BLOCK-----'
+    PartialPreinstalledGpgKeysEnabled:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: 'True if Preinstalled GPG keys are enabled, false otherwise.
+
+
+            All devices come with preinstalled preinstalled GPG keys to verify updates.
+
+            If this is set to false, those keys will be ignored during update verification.
+
+            User must upload their own GPG keys to verify updates in this case.'
+    UpdateSettings:
+      type: object
+      description: Represents the update configuration for the system used in get and put.
+      required:
+      - signed_update
+      properties:
+        removable_media_update:
+          $ref: '#/components/schemas/RemovableMediaUpdateConfig'
+        signed_update:
+          $ref: '#/components/schemas/SignedUpdateConfig'
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth2/token
+          scopes:
+            u-os-adm.firewall.readonly: Read access for firewall endpoints
+            u-os-adm.firewall.readwrite: Read and write access for firewall endpoints
+            u-os-adm.logging.readonly: Read access for logging endpoints
+            u-os-adm.network.readonly: Read access for network endpoints
+            u-os-adm.network.readwrite: Read and write access for network endpoints
+            u-os-adm.realtime.readonly: Read access for realtime endpoints
+            u-os-adm.realtime.readwrite: Read and write access for realtime endpoints
+            u-os-adm.recovery.readwrite: Read and write access for recovery endpoints
+            u-os-adm.security.readonly: Read access for security endpoints
+            u-os-adm.security.readwrite: Read and write access for security endpoints
+            u-os-adm.serial-interfaces.readonly: Read access for serial interface configuration endpoints
+            u-os-adm.serial-interfaces.readwrite: Read and write access for serial interface configuration endpoints
+            u-os-adm.syslog.readonly: Read access for syslog endpoints
+            u-os-adm.syslog.readwrite: Read and write access for syslog endpoints
+            u-os-adm.system.readonly: Read access for system endpoints
+            u-os-adm.system.readwrite: Read and write access for system endpoints
+            u-os-adm.time.readonly: Read access for time settings endpoints
+            u-os-adm.time.readwrite: Read and write access for time settings endpoints
+            u-os-adm.update.readonly: Read access for update endpoints
+            u-os-adm.update.readwrite: Read and write access for update endpoints
+      description: The HTTP API uses the OAuth2 client credentials flow.
+x-refined-from:
+- administration-openapi.yaml
+- weidmueller-administration-openapi.yml

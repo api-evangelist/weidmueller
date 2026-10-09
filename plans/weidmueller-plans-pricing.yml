@@ -1,0 +1,14 @@
+generated: '2026-10-09'
+method: none
+source: https://github.com/weidmueller/u-os-hub-api
+name: Weidmüller u-OS Data Hub API Plans
+audience: unclear
+pricing_basis: none
+published: false
+plan_count: 0
+plans: []
+delivery:
+  mode: self-hosted
+  evidence: The Variable-NATS-API is not accessible for clients outside the device.
+note: The Data Hub APIs ship on Weidmüller u-OS devices (e.g. UC20 controllers). No API pricing or plans page exists. The
+  specs are MIT-licensed on GitHub. www.weidmueller.com returned 403 to automated clients, so no product price list was read.

@@ -1,0 +1,45 @@
+generated: '2026-10-09'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/weidmueller-administration-openapi.yml
+- openapi/weidmueller-variable-http-openapi.yml
+format: rfc9457
+envelope:
+  media_type: application/problem+json
+  schema: HttpErrorPayload
+coverage:
+  operations: 53
+  statuses_declared: 4
+problems:
+- status: 400
+  title: Bad Request
+  description: Invalid certificate data
+  operations: 5
+  media_types:
+  - application/problem+json
+  - text/plain
+  schema: HttpErrorPayload
+- status: 405
+  title: Method Not Allowed
+  description: Tried to write a readonly variable.
+  operations: 2
+  media_types:
+  - text/plain
+  schema: FormatlessString
+- status: 409
+  title: Conflict
+  description: A report generation is already in progress.
+  operations: 1
+  media_types:
+  - application/problem+json
+  schema: HttpErrorPayload
+- status: default
+  title: null
+  description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500.
+    See body for detailed error info.
+  operations: 53
+  media_types:
+  - application/problem+json
+  - text/plain
+  schema: HttpErrorPayload

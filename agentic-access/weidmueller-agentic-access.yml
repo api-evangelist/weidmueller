@@ -1,0 +1,806 @@
+generated: '2026-10-09'
+method: generated
+source: openapi/weidmueller-administration-openapi.yml, openapi/weidmueller-variable-http-openapi.yml
+description: Recommended x-agentic-access execution contracts, classified heuristically from
+  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
+  audience per deployment. See research/curity/agentic-governance/.
+summary:
+  operations: 53
+  by_action_class:
+    connected: 30
+    acting: 23
+  by_consequence:
+    read: 30
+    safety-critical: 5
+    write: 18
+  human_in_the_loop_required: 5
+operations:
+- path: /firewall/active-config
+  method: get
+  operationId: get_firewall_active_config
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.firewall.readonly
+    - u-os-adm.firewall.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /firewall/active-config
+  method: put
+  operationId: set_firewall_active_config
+  x-agentic-access:
+    action-class: acting
+    consequence: safety-critical
+    subject: required
+    scope:
+    - u-os-adm.firewall.readwrite
+    audience: null
+    token:
+      max-ttl: 120
+      exchange: true
+      purpose-required: true
+      proof-of-possession: true
+    escalation:
+      human-in-the-loop: required
+    audit: required
+- path: /firewall/active-config
+  method: head
+  operationId: head_firewall_active_config
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.firewall.readonly
+    - u-os-adm.firewall.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /firewall/active-config
+  method: patch
+  operationId: update_firewall_active_config
+  x-agentic-access:
+    action-class: acting
+    consequence: safety-critical
+    subject: required
+    scope:
+    - u-os-adm.firewall.readwrite
+    audience: null
+    token:
+      max-ttl: 120
+      exchange: true
+      purpose-required: true
+      proof-of-possession: true
+    escalation:
+      human-in-the-loop: required
+    audit: required
+- path: /firewall/config
+  method: get
+  operationId: get_firewall_config
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.firewall.readonly
+    - u-os-adm.firewall.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /firewall/config
+  method: put
+  operationId: set_firewall_config
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.firewall.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /firewall/config
+  method: patch
+  operationId: update_firewall_config
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.firewall.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /firewall:reload
+  method: post
+  operationId: reload_firewall_config
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.firewall.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /logging/entries
+  method: get
+  operationId: get_logging_entries
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.logging.readonly
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /logging/reports
+  method: post
+  operationId: create_logging_report
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.logging.readonly
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /logging/reports/{report_id}
+  method: get
+  operationId: get_logging_report
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.logging.readonly
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /logging/sources
+  method: get
+  operationId: get_logging_sources
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.logging.readonly
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /network/config
+  method: get
+  operationId: get_network_config
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.network.readonly
+    - u-os-adm.network.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /network/config
+  method: put
+  operationId: set_network_config
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.network.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /network/config
+  method: patch
+  operationId: update_network_config
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.network.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /network/state
+  method: get
+  operationId: get_network_state
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.network.readonly
+    - u-os-adm.network.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /network:factory-reset
+  method: post
+  operationId: network_factory_reset
+  x-agentic-access:
+    action-class: acting
+    consequence: safety-critical
+    subject: required
+    scope:
+    - u-os-adm.network.readwrite
+    audience: null
+    token:
+      max-ttl: 120
+      exchange: true
+      purpose-required: true
+      proof-of-possession: true
+    escalation:
+      human-in-the-loop: required
+    audit: required
+- path: /openapi.json
+  method: get
+  operationId: get_openapi
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /operations/{operation_id}
+  method: get
+  operationId: get_operation
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /ping
+  method: get
+  operationId: ping
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /realtime/config
+  method: get
+  operationId: get_realtime_config
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.realtime.readonly
+    - u-os-adm.realtime.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /realtime/config
+  method: put
+  operationId: set_realtime_config
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.realtime.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /realtime/state
+  method: get
+  operationId: get_realtime_state
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.realtime.readonly
+    - u-os-adm.realtime.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /recovery:factory-reset
+  method: post
+  operationId: recovery_factory_reset
+  x-agentic-access:
+    action-class: acting
+    consequence: safety-critical
+    subject: required
+    scope:
+    - u-os-adm.recovery.readwrite
+    audience: null
+    token:
+      max-ttl: 120
+      exchange: true
+      purpose-required: true
+      proof-of-possession: true
+    escalation:
+      human-in-the-loop: required
+    audit: required
+- path: /security/config
+  method: get
+  operationId: get_security_settings
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.security.readonly
+    - u-os-adm.security.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /security/config
+  method: put
+  operationId: set_security_settings
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.security.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /serial-interfaces/config
+  method: get
+  operationId: get_serial_interface_config
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.serial-interfaces.readonly
+    - u-os-adm.serial-interfaces.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /serial-interfaces/config
+  method: put
+  operationId: set_serial_interface_config
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.serial-interfaces.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /serial-interfaces/config
+  method: patch
+  operationId: update_serial_interface_config
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.serial-interfaces.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /serial-interfaces/state
+  method: get
+  operationId: get_serial_interface_state
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.serial-interfaces.readonly
+    - u-os-adm.serial-interfaces.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /syslog/certificates
+  method: get
+  operationId: get_certificates
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.syslog.readonly
+    - u-os-adm.syslog.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /syslog/certificates
+  method: put
+  operationId: set_certificates
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.syslog.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /syslog/certificates
+  method: patch
+  operationId: patch_certificates
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.syslog.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /syslog/config
+  method: get
+  operationId: get_config
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.syslog.readonly
+    - u-os-adm.syslog.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /syslog/config
+  method: put
+  operationId: set_config
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.syslog.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /syslog/state
+  method: get
+  operationId: get_state
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.syslog.readonly
+    - u-os-adm.syslog.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /system/disks
+  method: get
+  operationId: get_system_disks
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.system.readonly
+    - u-os-adm.system.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /system/info
+  method: get
+  operationId: get_system_info
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.system.readonly
+    - u-os-adm.system.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /system/nameplate
+  method: get
+  operationId: get_system_nameplate
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.system.readonly
+    - u-os-adm.system.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /system:reboot
+  method: post
+  operationId: system_reboot
+  x-agentic-access:
+    action-class: acting
+    consequence: safety-critical
+    subject: required
+    scope:
+    - u-os-adm.system.readwrite
+    audience: null
+    token:
+      max-ttl: 120
+      exchange: true
+      purpose-required: true
+      proof-of-possession: true
+    escalation:
+      human-in-the-loop: required
+    audit: required
+- path: /time/config
+  method: get
+  operationId: get_time_config
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.time.readonly
+    - u-os-adm.time.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /time/config
+  method: put
+  operationId: set_time_config
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.time.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /time/state
+  method: get
+  operationId: get_time_state
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.time.readonly
+    - u-os-adm.time.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /time/timezones
+  method: get
+  operationId: list_timezones
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.time.readonly
+    - u-os-adm.time.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /update/config
+  method: get
+  operationId: get_update_settings
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - u-os-adm.update.readonly
+    - u-os-adm.update.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /update/config
+  method: put
+  operationId: set_update_settings
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.update.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /update/config
+  method: patch
+  operationId: update_update_settings
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - u-os-adm.update.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /openapi.json
+  method: get
+  operationId: get_openapi
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /providers
+  method: get
+  operationId: get_providers_handler
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - hub.variables.readonly
+    - hub.variables.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /providers/{provider_id}/variables
+  method: get
+  operationId: get_variables_handler
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - hub.variables.readonly
+    - hub.variables.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /providers/{provider_id}/variables
+  method: post
+  operationId: post_multiple_variables_handler
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - hub.variables.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /providers/{provider_id}/variables/{variable_key}
+  method: get
+  operationId: get_single_variable_handler
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - hub.variables.readonly
+    - hub.variables.readwrite
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /providers/{provider_id}/variables/{variable_key}
+  method: post
+  operationId: post_single_variable_handler
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - hub.variables.readwrite
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required

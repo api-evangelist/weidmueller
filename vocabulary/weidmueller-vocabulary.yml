@@ -1,0 +1,426 @@
+generated: '2026-10-09'
+method: derived
+generator: derive-vocabulary.py
+source:
+- openapi/weidmueller-administration-openapi.yml
+- openapi/weidmueller-variable-http-openapi.yml
+vocabulary:
+  name: Weidmüller Domain Vocabulary
+  description: 'Terms declared by Weidmüller''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-09'
+  terms:
+  - term: logging
+    definition: Centralized system logging, capture and reporting API for u-OS
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: syslog
+    definition: API for syslog forwarding configuration
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: network
+    definition: API for network settings and state of u-OS
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: firewall
+    definition: API for firewall settings of u-OS
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: openapi
+    definition: API for reading the OpenAPI specification
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: operations
+    definition: API for u-OS long running operations
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: recovery
+    definition: API for recovery of u-OS
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: security
+    definition: API for u-OS security settings
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: system
+    definition: API for general system informations & actions of u-OS
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: time
+    definition: API for time settings and time state of u-OS
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: update
+    definition: API for u-OS update settings
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: realtime
+    definition: API for u-OS realtime settings
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: serial-interfaces
+    definition: API for u-OS serial interface settings
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: ping
+    definition: API for checking the availability of u-os-adm
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-administration-openapi.yml
+  - term: Consumer
+    definition: A consumer may - list/get available providers - list/get/update variables published by providers.
+    tags:
+    - Resource Group
+    source: openapi/weidmueller-variable-http-openapi.yml
+  - term: AddressInformation
+    definition: Contains the address information of the device. Part of the device nameplate.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/AddressInformation
+  - term: AllowedRsMode
+    definition: Represents the allowed operation modes for a RS interface. This determines which config variants are allowed for the interface.
+      For example, some interfaces may only support RS-232 or RS-485 mode. For example, tty-x3 on R-Series only supports RS-485 mode.
+    tags:
+    - Enumeration
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/AllowedRsMode
+  - term: CanInterfaceConfig
+    definition: 'Object declared by the contract with fields: enable_termination_resistor.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/CanInterfaceConfig
+  - term: CanInterfaceState
+    definition: 'Object declared by the contract with fields: alt_names, name, termination_resistance_ohm.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/CanInterfaceState
+  - term: CertificateEntry
+    definition: A single certificate entry.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/CertificateEntry
+  - term: Certificates
+    definition: All certificates organized by type. Each certificate type maps certificate names (keys) to their entries.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/Certificates
+  - term: CpuIsolationConfig
+    definition: 'Object declared by the contract with fields: enabled.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/CpuIsolationConfig
+  - term: CpuIsolationState
+    definition: 'Object declared by the contract with fields: effective_cpus, enabled.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/CpuIsolationState
+  - term: CreateLogReportResponse
+    definition: 'Object declared by the contract with fields: operation_id.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/CreateLogReportResponse
+  - term: DeviceNameplate
+    definition: Contains the device nameplate information. Based on [IDTA 02006-3-0 Digital Nameplate for industrial equipment specification](https://github.com/admin-shell-io/submodel-templates/tree/main/published/Digital%20nameplate/3/0)
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/DeviceNameplate
+  - term: DhcpIpv4Range
+    definition: Represents a range of IPv4 addresses
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/DhcpIpv4Range
+  - term: Disk
+    definition: 'Object declared by the contract with fields: device_path, file_system, free_size, mount_points, storage_type, total_size.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/Disk
+  - term: Disks
+    definition: 'Object declared by the contract with fields: items.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/Disks
+  - term: DnatActionForward
+    definition: Forward to another host/port.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/DnatActionForward
+  - term: DnatActionRedirect
+    definition: Redirect to the firewall host itself
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/DnatActionRedirect
+  - term: FailoverGlobalConfig
+    definition: Global failover configuration. Controls the probe loop that monitors all configured interfaces and adjusts their route metrics
+      based on connectivity probe results.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/FailoverGlobalConfig
+  - term: FailoverInterfaceConfig
+    definition: Failover configuration for a single monitored interface. When enabled, the probe loop checks connectivity on this interface. If
+      `failure_threshold` consecutive probes fail the interface is penalised by settings its active metric to `failed_metric`. Once `success_threshold`
+      consecutive probes succeed the metric is restored to the interface's configured `metric` value.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/FailoverInterfaceConfig
+  - term: FilterRules
+    definition: 'Object declared by the contract with fields: forward, input, output, policy.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/FilterRules
+  - term: FirewallConfig
+    definition: Custom firewall configuration. Contains filter and nat rules. If an array is empty, it means "match all". For example, an `InputRule`
+      with an empty `source` matches packets from any source address. Connections in the established or related conntrack state are accepted automatically.
+      Therefore, no explicit rules are required for the return path.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/FirewallConfig
+  - term: Firmware
+    definition: 'Object declared by the contract with fields: name, version.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/Firmware
+  - term: ForwardRule
+    definition: 'Object declared by the contract with fields: action, description, match, priority.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/ForwardRule
+  - term: GlobalDnsServers
+    definition: Represents the global DNS servers used by the system. The order of the servers represents their priority, with the first one being
+      the primary DNS server unless an interface overrides it.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/GlobalDnsServers
+  - term: GpgKey
+    definition: The content of a GPG public key file in ASCII armor format.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/GpgKey
+  - term: HttpErrorPayload
+    definition: Common error payload structure for HTTP responses. Based on [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457)
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/HttpErrorPayload
+  - term: InputRule
+    definition: 'Object declared by the contract with fields: action, description, match, priority.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/InputRule
+  - term: InterfaceConfig
+    definition: Represents the configuration of a single network interface.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/InterfaceConfig
+  - term: InterfaceFailoverState
+    definition: Failover state of a single interface exposed via the network state endpoint.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/InterfaceFailoverState
+  - term: InterfacePolicy
+    definition: Specifies the default action for packets that do not match any rule on a specific interface. This allows you to configure whether
+      the rules are an allowlist or a blocklist. All physical interfaces must have a policy defined. But also non existing interfaces can be defined
+      in the policy. This allows to configure policies for interfaces that may be added while runtime.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/InterfacePolicy
+  - term: InterfaceProbeState
+    definition: 'The current failover probe state of a monitored interface. - `HEALTHY`: Enabled and passing probes. - `PROBING`: Transitional
+      state on the path to failure or recovery. - `FAILED`: Penalised — using an elevated metric because probes are failing.'
+    tags:
+    - Enumeration
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/InterfaceProbeState
+  - term: InterfaceState
+    definition: Represents the current state of a network interface.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/InterfaceState
+  - term: InterfaceType
+    definition: The type of network interface.
+    tags:
+    - Enumeration
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/InterfaceType
+  - term: Ipv4Config
+    definition: Represents the IPv4 configuration of a network interface.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/Ipv4Config
+  - term: Ipv4Route
+    definition: An IP route entry in the IPv4 routing table.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/Ipv4Route
+  - term: Ipv4State
+    definition: Represents the IPv4 state of a network interface.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/Ipv4State
+  - term: Ipv4String
+    definition: Represents an IPv4 address in a string format.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/Ipv4String
+  - term: Ipv4Subnet
+    definition: Ipv4 address with prefix length. The prefix length is used to determine the network mask.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/Ipv4Subnet
+  - term: ListTimezonesResponse
+    definition: 'Object declared by the contract with fields: items.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/ListTimezonesResponse
+  - term: LogEntry
+    definition: 'Object declared by the contract with fields: message, source, timestamp.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/LogEntry
+  - term: LogEntryResponse
+    definition: 'Object declared by the contract with fields: items, next_cursor.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/LogEntryResponse
+  - term: LogSource
+    definition: 'Object declared by the contract with fields: id.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/LogSource
+  - term: LogSourcesResponse
+    definition: 'Object declared by the contract with fields: items.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/LogSourcesResponse
+  - term: ManualTimeSettings
+    definition: Manual time settings used when `method` is `MANUAL`.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/ManualTimeSettings
+  - term: MasqueradeAction
+    definition: The source address is replaced depending on the routing destination (e.g. with the outgoing interface's IP address).
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/MasqueradeAction
+  - term: Memory
+    definition: 'Object declared by the contract with fields: available_size, total_size.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/Memory
+  - term: NatRules
+    definition: 'Object declared by the contract with fields: postrouting, prerouting.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/NatRules
+  - term: NetworkConfig
+    definition: Used for writing the network configuration. All fields are required to be present, but can be empty in some cases.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/NetworkConfig
+  - term: NetworkState
+    definition: The current network state on the device. Note that this may differ from the configuration, e.g. a DHCP interface has an address
+      in the state, but not in the configuration.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/NetworkState
+  - term: NtpRuntimeState
+    definition: 'Object declared by the contract with fields: current_server, link_ntp_servers, ntp_synchronized.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/NtpRuntimeState
+  - term: NtpSettings
+    definition: NTP-specific settings used when `method` is `NTP`.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/NtpSettings
+  - term: OperationState
+    definition: Represents the entire state of a long-running operation.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/OperationState
+  - term: OperationStateCompleted
+    definition: 'Object declared by the contract with fields: completed_at, created_at, resource_id, resource_url, status.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/OperationStateCompleted
+  - term: OperationStateFailed
+    definition: 'Object declared by the contract with fields: created_at, failed_at, resource_url, status.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/OperationStateFailed
+  - term: OperationStatePending
+    definition: 'Object declared by the contract with fields: created_at, status.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/OperationStatePending
+  - term: OutputReachability
+    definition: Reachability status of a syslog output destination.
+    tags:
+    - Enumeration
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/OutputReachability
+  - term: OutputRule
+    definition: 'Object declared by the contract with fields: action, description, match, priority.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/OutputRule
+  - term: OutputState
+    definition: Health information for a single syslog output.
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/OutputState
+  - term: PartialCanInterfaceConfig
+    definition: 'Object declared by the contract with fields: enable_termination_resistor.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/PartialCanInterfaceConfig
+  - term: PartialCertificateEntry
+    definition: A single certificate entry. (PATCH)
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/PartialCertificateEntry
+  - term: PartialCertificates
+    definition: All certificates organized by type. Each certificate type maps certificate names (keys) to their entries. (PATCH)
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/PartialCertificates
+  - term: PartialDhcpIpv4Range
+    definition: Represents a range of IPv4 addresses (PATCH)
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/PartialDhcpIpv4Range
+  - term: PartialDnatActionForward
+    definition: Forward to another host/port. (PATCH)
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/PartialDnatActionForward
+  - term: PartialDnatActionRedirect
+    definition: Redirect to the firewall host itself (PATCH)
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/PartialDnatActionRedirect
+  - term: PartialFailoverGlobalConfig
+    definition: Global failover configuration. Controls the probe loop that monitors all configured interfaces and adjusts their route metrics
+      based on connectivity probe results. (PATCH)
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/PartialFailoverGlobalConfig
+  - term: PartialFailoverInterfaceConfig
+    definition: Failover configuration for a single monitored interface. When enabled, the probe loop checks connectivity on this interface. If
+      `failure_threshold` consecutive probes fail the interface is penalised by settings its active metric to `failed_metric`. Once `success_threshold`
+      consecutive probes succeed the metric is restored to the interface's configured `metric` value. (PATCH)
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/PartialFailoverInterfaceConfig
+  - term: PartialFilterRules
+    definition: 'Object declared by the contract with fields: forward, input, output, policy.'
+    tags:
+    - Object
+    source: openapi/weidmueller-administration-openapi.yml#/components/schemas/PartialFilterRules

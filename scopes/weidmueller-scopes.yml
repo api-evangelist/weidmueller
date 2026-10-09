@@ -1,0 +1,149 @@
+generated: '2026-10-09'
+method: derived
+source: openapi/weidmueller-administration-openapi.yml, openapi/weidmueller-variable-http-openapi.yml
+schemes:
+- name: OAuth2
+  source: openapi/weidmueller-administration-openapi.yml
+  flows:
+  - flow: clientCredentials
+    tokenUrl: /oauth2/token
+  description: The HTTP API uses the OAuth2 client credentials flow.
+- name: OAuth2
+  source: openapi/weidmueller-variable-http-openapi.yml
+  flows:
+  - flow: clientCredentials
+    tokenUrl: /oauth2/token
+  description: The HTTP API uses the OAuth2 client credentials flow.
+scopes:
+- scope: hub.variables.readonly
+  description: Read-only access to Data Hub variables.
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-variable-http-openapi.yml
+- scope: hub.variables.readwrite
+  description: Read and write access to Data Hub variables.
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-variable-http-openapi.yml
+- scope: u-os-adm.firewall.readonly
+  description: Read access for firewall endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.firewall.readwrite
+  description: Read and write access for firewall endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.logging.readonly
+  description: Read access for logging endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.network.readonly
+  description: Read access for network endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.network.readwrite
+  description: Read and write access for network endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.realtime.readonly
+  description: Read access for realtime endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.realtime.readwrite
+  description: Read and write access for realtime endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.recovery.readwrite
+  description: Read and write access for recovery endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.security.readonly
+  description: Read access for security endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.security.readwrite
+  description: Read and write access for security endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.serial-interfaces.readonly
+  description: Read access for serial interface configuration endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.serial-interfaces.readwrite
+  description: Read and write access for serial interface configuration endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.syslog.readonly
+  description: Read access for syslog endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.syslog.readwrite
+  description: Read and write access for syslog endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.system.readonly
+  description: Read access for system endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.system.readwrite
+  description: Read and write access for system endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.time.readonly
+  description: Read access for time settings endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.time.readwrite
+  description: Read and write access for time settings endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.update.readonly
+  description: Read access for update endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+- scope: u-os-adm.update.readwrite
+  description: Read and write access for update endpoints
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/weidmueller-administration-openapi.yml

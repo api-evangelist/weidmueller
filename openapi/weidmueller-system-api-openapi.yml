@@ -1,0 +1,335 @@
+openapi: 3.2.0
+info:
+  title: Weidmueller System API
+  version: 1.5.0-next
+  contact:
+    name: Weidmüller
+  license:
+    name: MIT
+    identifier: MIT
+  description: 'Operations tagged system across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /u-os-adm/api/v1
+tags:
+- name: System
+  description: API for general system informations & actions of u-OS
+paths:
+  /system/disks:
+    get:
+      tags:
+      - System
+      summary: This endpoint returns disk information
+      description: Returns a list of all storage disks in the system and their respective properties.
+      operationId: get_system_disks
+      responses:
+        '200':
+          description: Disk information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Disks'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.system.readonly
+      - OAuth2:
+        - u-os-adm.system.readwrite
+    servers:
+    - url: /u-os-adm/api/v1
+  /system/info:
+    get:
+      tags:
+      - System
+      summary: This endpoint returns static system information (such as cpu architecture…
+      description: 'Some hardware information can only be read out if the device was booted via uboot.
+
+        Everything that could not be determined is returned as None (these information are marked as optional).'
+      operationId: get_system_info
+      responses:
+        '200':
+          description: System information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemInformation'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.system.readonly
+      - OAuth2:
+        - u-os-adm.system.readwrite
+    servers:
+    - url: /u-os-adm/api/v1
+  /system/nameplate:
+    get:
+      tags:
+      - System
+      summary: Returns the digital nameplate information of the device
+      description: Returns nameplate information according to the IDTA digital nameplate specification 3.0.
+      operationId: get_system_nameplate
+      responses:
+        '200':
+          description: Nameplate information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceNameplate'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.system.readonly
+      - OAuth2:
+        - u-os-adm.system.readwrite
+    servers:
+    - url: /u-os-adm/api/v1
+  /system:reboot:
+    post:
+      tags:
+      - System
+      summary: Triggers a system reboot
+      description: Triggers a reboot. System will be unavailable for a while after triggering this.
+      operationId: system_reboot
+      responses:
+        '202':
+          description: System reboot initiated successfully.
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.system.readwrite
+    servers:
+    - url: /u-os-adm/api/v1
+components:
+  schemas:
+    Disks:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Disk'
+    DeviceNameplate:
+      type: object
+      description: 'Contains the device nameplate information.
+
+
+        Based on [IDTA 02006-3-0 Digital Nameplate for industrial equipment specification](https://github.com/admin-shell-io/submodel-templates/tree/main/published/Digital%20nameplate/3/0)'
+      required:
+      - URIOfTheProduct
+      - ManufacturerName
+      - ManufacturerProductDesignation
+      - AddressInformation
+      - OrderCodeOfManufacturer
+      properties:
+        AddressInformation:
+          $ref: '#/components/schemas/AddressInformation'
+        HardwareVersion:
+          type:
+          - string
+          - 'null'
+        ManufacturerName:
+          type: string
+        ManufacturerProductDesignation:
+          type: string
+        ManufacturerProductType:
+          type:
+          - string
+          - 'null'
+        OrderCodeOfManufacturer:
+          type: string
+        SerialNumber:
+          type:
+          - string
+          - 'null'
+        SoftwareVersion:
+          type:
+          - string
+          - 'null'
+        URIOfTheProduct:
+          type: string
+        YearOfConstruction:
+          type:
+          - string
+          - 'null'
+    Memory:
+      type: object
+      required:
+      - total_size
+      - available_size
+      properties:
+        available_size:
+          type: integer
+          format: int64
+          minimum: 0
+        total_size:
+          type: integer
+          format: int64
+          minimum: 0
+    HttpErrorPayload:
+      type: object
+      description: 'Common error payload structure for HTTP responses.
+
+
+        Based on [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457)'
+      required:
+      - type
+      - title
+      - status
+      properties:
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Optional details about the error
+          example: 'Low Level OS Error #1234'
+        instance:
+          type:
+          - string
+          - 'null'
+          format: uri-reference
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: null
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code generated by the origin server for this occurrence of the problem
+          example: 500
+          maximum: 599
+          minimum: 100
+        title:
+          type: string
+          description: Human-readable error message.
+          example: Something went wrong in the backend.
+        type:
+          type: string
+          format: uri-reference
+          description: 'A URI reference that identifies the problem type
+
+
+            The last part of the URI is always a `ErrorId`'
+          example: /u-os-adm/api/v1/errors/set-security-settings
+    Firmware:
+      type: object
+      required:
+      - name
+      - version
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+    SystemInformation:
+      type: object
+      required:
+      - cpu_architecture
+      - firmware
+      - memory
+      properties:
+        cpu_architecture:
+          type: string
+        firmware:
+          $ref: '#/components/schemas/Firmware'
+        memory:
+          $ref: '#/components/schemas/Memory'
+    StorageType:
+      type: string
+      enum:
+      - Internal
+      - Removable
+    Disk:
+      type: object
+      required:
+      - device_path
+      - mount_points
+      - file_system
+      - total_size
+      - free_size
+      - storage_type
+      properties:
+        device_path:
+          type: string
+        file_system:
+          type: string
+        free_size:
+          type: integer
+          format: int64
+          minimum: 0
+        mount_points:
+          type: array
+          items:
+            type: string
+        storage_type:
+          $ref: '#/components/schemas/StorageType'
+        total_size:
+          type: integer
+          format: int64
+          minimum: 0
+    AddressInformation:
+      type: object
+      description: Contains the address information of the device. Part of the device nameplate.
+      required:
+      - Street
+      - Zipcode
+      - CityTown
+      - NationalCode
+      properties:
+        CityTown:
+          type: string
+        NationalCode:
+          type: string
+        Street:
+          type: string
+        Zipcode:
+          type: string
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth2/token
+          scopes:
+            u-os-adm.firewall.readonly: Read access for firewall endpoints
+            u-os-adm.firewall.readwrite: Read and write access for firewall endpoints
+            u-os-adm.logging.readonly: Read access for logging endpoints
+            u-os-adm.network.readonly: Read access for network endpoints
+            u-os-adm.network.readwrite: Read and write access for network endpoints
+            u-os-adm.realtime.readonly: Read access for realtime endpoints
+            u-os-adm.realtime.readwrite: Read and write access for realtime endpoints
+            u-os-adm.recovery.readwrite: Read and write access for recovery endpoints
+            u-os-adm.security.readonly: Read access for security endpoints
+            u-os-adm.security.readwrite: Read and write access for security endpoints
+            u-os-adm.serial-interfaces.readonly: Read access for serial interface configuration endpoints
+            u-os-adm.serial-interfaces.readwrite: Read and write access for serial interface configuration endpoints
+            u-os-adm.syslog.readonly: Read access for syslog endpoints
+            u-os-adm.syslog.readwrite: Read and write access for syslog endpoints
+            u-os-adm.system.readonly: Read access for system endpoints
+            u-os-adm.system.readwrite: Read and write access for system endpoints
+            u-os-adm.time.readonly: Read access for time settings endpoints
+            u-os-adm.time.readwrite: Read and write access for time settings endpoints
+            u-os-adm.update.readonly: Read access for update endpoints
+            u-os-adm.update.readwrite: Read and write access for update endpoints
+      description: The HTTP API uses the OAuth2 client credentials flow.
+x-refined-from:
+- administration-openapi.yaml
+- weidmueller-administration-openapi.yml

@@ -1,0 +1,64 @@
+generated: '2026-10-09'
+method: searched
+source: https://github.com/weidmueller/u-os-hub-api/blob/main/openapi/README.adoc
+name: Weidmüller u-OS Data Hub HTTP API Conventions
+docs: https://github.com/weidmueller/u-os-hub-api/blob/main/openapi/README.adoc
+auth:
+  style: OAuth2 client credentials (tokenUrl /oauth2/token). Scopes include hub.variables.readonly and hub.variables.readwrite.
+  local_socket: The Administration API is also exposed through the Unix domain socket /run/u-os-adm/u-os-adm.sock. The root
+    user can access the API through this socket without authentication.
+  see: authentication/weidmueller-authentication.yml
+configuration_model:
+  style: declarative
+  rules:
+  - A configuration describes the desired state; GET and PUT use the same schema.
+  - The desired state may not take effect immediately. Where available, the corresponding /state endpoint reports the current state.
+  - Use PATCH with JSON Merge Patch (RFC 7396) for partial updates.
+  - An omitted property is unchanged, null clears it (only where the schema permits null), and a concrete value replaces it.
+  - Imperative (colon-suffixed) endpoints such as /system:reboot are supplementary.
+idempotency:
+  coverage: none
+  mechanism: No Idempotency-Key header. PUT replaces the full desired-state configuration, so repeating it gives the same
+    result by HTTP semantics. POST actions (/system:reboot, /network:factory-reset, /recovery:factory-reset, /firewall:reload,
+    /logging/reports, and the Variable-HTTP writes) have no replay protection.
+concurrency:
+  optimistic_locking: Some endpoints support optimistic locking. Pass the ETag returned by GET in the If-Match header to
+    prevent lost updates.
+  header: If-Match
+  operations_with_if_match: 4
+pagination:
+  style: cursor
+  params:
+  - cursor
+  - limit
+  scope:
+  - GET /logging/entries
+  note: cursor is empty for the first page; limit defaults to 100.
+head_requests: By default, each GET endpoint also supports HEAD with the same status code and headers and no body.
+versioning:
+  scheme: Semantic Versioning; the major version is part of the base URL (/api/v1), and the full version is in info.version.
+  see: lifecycle/weidmueller-lifecycle.yml
+errors:
+  envelope: application/problem+json (HttpErrorPayload with type, title and status required, plus detail and instance; the
+    schema says it is based on RFC 9457)
+  applies_to: Administration API. The Variable-HTTP API returns text/plain errors.
+  see: errors/
+rate_limit_signaling: none documented
+reversibility:
+  surfaces:
+  - surface: Firewall active configuration
+    operations:
+    - set_firewall_active_config
+    - update_firewall_active_config
+    reversal: automatic rollback of a Temporary configuration to the persistent configuration
+    window: Set with the timeout query parameter, the "Number of seconds after which the temporary configuration is automatically
+      rolled back to the persistent configuration". The Rollback-At response header gives the time of the rollback.
+    status: verified
+    source: openapi/weidmueller-administration-openapi.yml
+  - surface: Other configuration (network, time, security, update, serial interfaces, syslog, realtime)
+    reversal: none documented. A previous configuration can be PUT again, but there is no undo operation and no stated window.
+    status: none
+  - surface: Factory reset and reboot (network_factory_reset, recovery_factory_reset, system_reboot)
+    reversal: none documented
+    status: none
+dry_run_mode: none documented

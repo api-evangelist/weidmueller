@@ -1,0 +1,306 @@
+openapi: 3.2.0
+info:
+  title: Weidmueller Logging API
+  version: 1.5.0-next
+  contact:
+    name: Weidmüller
+  license:
+    name: MIT
+    identifier: MIT
+  description: 'Operations tagged logging across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /u-os-adm/api/v1
+tags:
+- name: Logging
+  description: Centralized system logging, capture and reporting API for u-OS
+paths:
+  /logging/entries:
+    get:
+      tags:
+      - Logging
+      summary: Get all log entries
+      description: The entries can be filtered and accessed via pagination.
+      operationId: get_logging_entries
+      parameters:
+      - name: cursor
+        in: query
+        description: 'The cursor is used to paginate through the log entries.
+
+          It''s empty for the first page.'
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: 'Number of requested entries.
+
+          Default is 100.'
+        required: false
+        schema:
+          type: integer
+          format: int64
+          minimum: 0
+      - name: sources
+        in: query
+        description: 'Filter parameter for log sources.
+
+          The exact name of the source must be indicated.'
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: filter_msgs
+        in: query
+        description: 'Only include log entries whose message contains all filter-strings.
+
+          Not case sensitive. If not set or empty, all messages will be included.'
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Log entries found sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogEntryResponse'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.logging.readonly
+    servers:
+    - url: /u-os-adm/api/v1
+  /logging/reports:
+    post:
+      tags:
+      - Logging
+      summary: Trigger the generation of a report
+      description: 'The report will contain the current system logs.
+
+        The report generation is a long-running operation.
+
+        You can poll the status of the operation using the `/operations/{operation_id}` endpoint.'
+      operationId: create_logging_report
+      responses:
+        '202':
+          description: The generation of the report has been started successfully.
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL of the operation resource to poll for status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateLogReportResponse'
+        '409':
+          description: A report generation is already in progress.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.logging.readonly
+    servers:
+    - url: /u-os-adm/api/v1
+  /logging/reports/{report_id}:
+    get:
+      tags:
+      - Logging
+      summary: Get the report by the given report_id
+      description: 'The report is a gzipped tar archive containing all system logs.
+
+        You need to trigger the report generation first using the `/logging/reports` endpoint.'
+      operationId: get_logging_report
+      parameters:
+      - name: report_id
+        in: path
+        description: ID of the report to retrieve
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Report found sucessfully
+          content:
+            application/octet-stream: {}
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.logging.readonly
+    servers:
+    - url: /u-os-adm/api/v1
+  /logging/sources:
+    get:
+      tags:
+      - Logging
+      summary: Get available log sources
+      description: All log sources will be listed here, for examples all systemd services.
+      operationId: get_logging_sources
+      responses:
+        '200':
+          description: Log sources retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogSourcesResponse'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.logging.readonly
+    servers:
+    - url: /u-os-adm/api/v1
+components:
+  schemas:
+    LogSource:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          example: u-os-adm
+    LogEntryResponse:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEntry'
+        next_cursor:
+          type:
+          - string
+          - 'null'
+    LogSourcesResponse:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogSource'
+    HttpErrorPayload:
+      type: object
+      description: 'Common error payload structure for HTTP responses.
+
+
+        Based on [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457)'
+      required:
+      - type
+      - title
+      - status
+      properties:
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Optional details about the error
+          example: 'Low Level OS Error #1234'
+        instance:
+          type:
+          - string
+          - 'null'
+          format: uri-reference
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: null
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code generated by the origin server for this occurrence of the problem
+          example: 500
+          maximum: 599
+          minimum: 100
+        title:
+          type: string
+          description: Human-readable error message.
+          example: Something went wrong in the backend.
+        type:
+          type: string
+          format: uri-reference
+          description: 'A URI reference that identifies the problem type
+
+
+            The last part of the URI is always a `ErrorId`'
+          example: /u-os-adm/api/v1/errors/set-security-settings
+    LogEntry:
+      type: object
+      required:
+      - timestamp
+      - message
+      - source
+      properties:
+        message:
+          type: string
+          example: Log message
+        source:
+          $ref: '#/components/schemas/LogSource'
+        timestamp:
+          type: string
+          format: date-time
+    CreateLogReportResponse:
+      type: object
+      required:
+      - operation_id
+      properties:
+        operation_id:
+          type: string
+          format: uuid
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth2/token
+          scopes:
+            u-os-adm.firewall.readonly: Read access for firewall endpoints
+            u-os-adm.firewall.readwrite: Read and write access for firewall endpoints
+            u-os-adm.logging.readonly: Read access for logging endpoints
+            u-os-adm.network.readonly: Read access for network endpoints
+            u-os-adm.network.readwrite: Read and write access for network endpoints
+            u-os-adm.realtime.readonly: Read access for realtime endpoints
+            u-os-adm.realtime.readwrite: Read and write access for realtime endpoints
+            u-os-adm.recovery.readwrite: Read and write access for recovery endpoints
+            u-os-adm.security.readonly: Read access for security endpoints
+            u-os-adm.security.readwrite: Read and write access for security endpoints
+            u-os-adm.serial-interfaces.readonly: Read access for serial interface configuration endpoints
+            u-os-adm.serial-interfaces.readwrite: Read and write access for serial interface configuration endpoints
+            u-os-adm.syslog.readonly: Read access for syslog endpoints
+            u-os-adm.syslog.readwrite: Read and write access for syslog endpoints
+            u-os-adm.system.readonly: Read access for system endpoints
+            u-os-adm.system.readwrite: Read and write access for system endpoints
+            u-os-adm.time.readonly: Read access for time settings endpoints
+            u-os-adm.time.readwrite: Read and write access for time settings endpoints
+            u-os-adm.update.readonly: Read access for update endpoints
+            u-os-adm.update.readwrite: Read and write access for update endpoints
+      description: The HTTP API uses the OAuth2 client credentials flow.
+x-refined-from:
+- administration-openapi.yaml
+- weidmueller-administration-openapi.yml

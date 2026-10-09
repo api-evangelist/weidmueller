@@ -1,0 +1,224 @@
+openapi: 3.2.0
+info:
+  title: Weidmueller Realtime API
+  version: 1.5.0-next
+  contact:
+    name: Weidmüller
+  license:
+    name: MIT
+    identifier: MIT
+  description: 'Operations tagged realtime across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /u-os-adm/api/v1
+tags:
+- name: Realtime
+  description: API for u-OS realtime settings
+paths:
+  /realtime/config:
+    get:
+      tags:
+      - Realtime
+      summary: Get the realtime configuration for the system
+      description: 'Notice that changing the realtime configuration requires a system reboot to take effect.
+
+        Check the realtime state endpoint to see the current state of the system.'
+      operationId: get_realtime_config
+      responses:
+        '200':
+          description: Realtime configuration read successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RealtimeConfig'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.realtime.readonly
+      - OAuth2:
+        - u-os-adm.realtime.readwrite
+    put:
+      tags:
+      - Realtime
+      summary: Set the realtime configuration for the system
+      description: Changes are fully applied after a system reboot. The system will not be rebooted automatically.
+      operationId: set_realtime_config
+      requestBody:
+        description: Realtime configuration to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RealtimeConfig'
+        required: true
+      responses:
+        '200':
+          description: Realtime configuration updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RealtimeConfig'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.realtime.readwrite
+    servers:
+    - url: /u-os-adm/api/v1
+  /realtime/state:
+    get:
+      tags:
+      - Realtime
+      summary: Get the current realtime state
+      description: 'Notice that changing to realtime configuration requires a system reboot to take effect.
+
+        The state will reflect the current state of the system, not the desired state after a reboot.'
+      operationId: get_realtime_state
+      responses:
+        '200':
+          description: Realtime state read successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RealtimeState'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.realtime.readonly
+      - OAuth2:
+        - u-os-adm.realtime.readwrite
+    servers:
+    - url: /u-os-adm/api/v1
+components:
+  schemas:
+    CpuIsolationState:
+      type: object
+      required:
+      - enabled
+      - effective_cpus
+      properties:
+        effective_cpus:
+          type: array
+          items:
+            type: integer
+            format: int32
+            minimum: 0
+          description: 'Lists the CPU cores effectively used for real-time tasks when CPU isolation is enabled.
+
+            CPU core numbers are zero-based. For example, `[3]` means that only the fourth CPU core is used for real-time tasks.'
+          example:
+          - 1
+        enabled:
+          type: boolean
+          description: 'Indicates whether CPU isolation is currently active.
+
+            This reflects the current system state, not the desired state after a reboot.
+
+            To view the desired state after a reboot, use the realtime configuration endpoint.'
+    HttpErrorPayload:
+      type: object
+      description: 'Common error payload structure for HTTP responses.
+
+
+        Based on [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457)'
+      required:
+      - type
+      - title
+      - status
+      properties:
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Optional details about the error
+          example: 'Low Level OS Error #1234'
+        instance:
+          type:
+          - string
+          - 'null'
+          format: uri-reference
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: null
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code generated by the origin server for this occurrence of the problem
+          example: 500
+          maximum: 599
+          minimum: 100
+        title:
+          type: string
+          description: Human-readable error message.
+          example: Something went wrong in the backend.
+        type:
+          type: string
+          format: uri-reference
+          description: 'A URI reference that identifies the problem type
+
+
+            The last part of the URI is always a `ErrorId`'
+          example: /u-os-adm/api/v1/errors/set-security-settings
+    RealtimeState:
+      type: object
+      required:
+      - cpu_isolation
+      properties:
+        cpu_isolation:
+          $ref: '#/components/schemas/CpuIsolationState'
+    CpuIsolationConfig:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+    RealtimeConfig:
+      type: object
+      required:
+      - cpu_isolation
+      properties:
+        cpu_isolation:
+          $ref: '#/components/schemas/CpuIsolationConfig'
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth2/token
+          scopes:
+            u-os-adm.firewall.readonly: Read access for firewall endpoints
+            u-os-adm.firewall.readwrite: Read and write access for firewall endpoints
+            u-os-adm.logging.readonly: Read access for logging endpoints
+            u-os-adm.network.readonly: Read access for network endpoints
+            u-os-adm.network.readwrite: Read and write access for network endpoints
+            u-os-adm.realtime.readonly: Read access for realtime endpoints
+            u-os-adm.realtime.readwrite: Read and write access for realtime endpoints
+            u-os-adm.recovery.readwrite: Read and write access for recovery endpoints
+            u-os-adm.security.readonly: Read access for security endpoints
+            u-os-adm.security.readwrite: Read and write access for security endpoints
+            u-os-adm.serial-interfaces.readonly: Read access for serial interface configuration endpoints
+            u-os-adm.serial-interfaces.readwrite: Read and write access for serial interface configuration endpoints
+            u-os-adm.syslog.readonly: Read access for syslog endpoints
+            u-os-adm.syslog.readwrite: Read and write access for syslog endpoints
+            u-os-adm.system.readonly: Read access for system endpoints
+            u-os-adm.system.readwrite: Read and write access for system endpoints
+            u-os-adm.time.readonly: Read access for time settings endpoints
+            u-os-adm.time.readwrite: Read and write access for time settings endpoints
+            u-os-adm.update.readonly: Read access for update endpoints
+            u-os-adm.update.readwrite: Read and write access for update endpoints
+      description: The HTTP API uses the OAuth2 client credentials flow.
+x-refined-from:
+- administration-openapi.yaml
+- weidmueller-administration-openapi.yml

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/weidmueller/main/json-schema/weidmueller-response-single-read-schema.json",
+  "title": "ResponseSingleRead",
+  "description": "Response object for a single variable.",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/weidmueller-variable-http-openapi.yml#/components/schemas/ResponseSingleRead",
+  "type": "object",
+  "required": [
+    "key",
+    "value",
+    "quality",
+    "timestamp"
+  ],
+  "properties": {
+    "definition": {
+      "$ref": "#/$defs/VariableDefinition"
+    },
+    "key": {
+      "type": "string",
+      "format": "^[a-zA-Z_]([a-zA-Z0-9_]{0,62})?(\\.[a-zA-Z_]([a-zA-Z0-9_]{0,62})?)*$",
+      "maxLength": 1023
+    },
+    "quality": {
+      "$ref": "#/$defs/VariableQuality"
+    },
+    "timestamp": {
+      "$ref": "#/$defs/ISO8601Timestamp"
+    },
+    "value": {
+      "$ref": "#/$defs/VariableValue"
+    }
+  },
+  "$defs": {
+    "FormatlessString": {
+      "type": "string",
+      "format": "string",
+      "description": "String without special format.",
+      "maxLength": 1023
+    },
+    "ISO8601Duration": {
+      "type": "string",
+      "format": "^(-?)P(?=\\d|T\\d)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)([DW]))?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?$",
+      "description": "A duration string according to ISO8601 norm (https://datatracker.ietf.org/doc/html/rfc3339#appendix-A).\n\nExample: 'PT5H9M39.400S'",
+      "maxLength": 82
+    },
+    "ISO8601Timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "A timestamp string according to ISO8601 norm (https://datatracker.ietf.org/doc/html/rfc3339#section-5.6).\n\nExample: '1970-01-01T00:20:34.000Z'",
+      "maxLength": 24
+    },
+    "VariableAccessType": {
+      "type": "string",
+      "enum": [
+        "READ_ONLY",
+        "READ_WRITE"
+      ]
+    },
+    "VariableDataType": {
+      "type": "string",
+      "enum": [
+        "BOOLEAN",
+        "DURATION",
+        "FLOAT64",
+        "INT64",
+        "STRING",
+        "TIMESTAMP"
+      ]
+    },
+    "VariableDefinition": {
+      "type": "object",
+      "required": [
+        "data_type",
+        "access_type"
+      ],
+      "properties": {
+        "access_type": {
+          "$ref": "#/$defs/VariableAccessType"
+        },
+        "data_type": {
+          "$ref": "#/$defs/VariableDataType"
+        },
+        "experimental": {
+          "type": "boolean"
+        }
+      }
+    },
+    "VariableQuality": {
+      "type": "string",
+      "enum": [
+        "BAD",
+        "GOOD",
+        "UNCERTAIN",
+        "UNCERTAIN_LAST_USABLE_VALUE",
+        "UNCERTAIN_INITIAL_VALUE"
+      ]
+    },
+    "VariableValue": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "format": "int64"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/$defs/FormatlessString"
+        },
+        {
+          "type": "number",
+          "format": "double"
+        },
+        {
+          "$ref": "#/$defs/ISO8601Duration"
+        },
+        {
+          "$ref": "#/$defs/ISO8601Timestamp"
+        }
+      ]
+    }
+  }
+}

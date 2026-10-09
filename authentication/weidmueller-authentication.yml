@@ -1,0 +1,19 @@
+generated: '2026-10-09'
+method: derived
+source: openapi/weidmueller-administration-openapi.yml, openapi/weidmueller-variable-http-openapi.yml
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - clientCredentials
+schemes:
+- name: OAuth2
+  type: oauth2
+  flows:
+  - flow: clientCredentials
+    tokenUrl: /oauth2/token
+    scopes: 20
+  description: The HTTP API uses the OAuth2 client credentials flow.
+  sources:
+  - openapi/weidmueller-administration-openapi.yml
+  - openapi/weidmueller-variable-http-openapi.yml

@@ -1,0 +1,48 @@
+generated: '2026-10-09'
+method: generated
+source: Packaged Agent Skills generated from the Weidmüller u-OS OpenAPI files under
+  openapi/ (source github.com/weidmueller/u-os-hub-api). No provider-published skills
+  or AGENTS.md found in the weidmueller GitHub org.
+skills:
+- file: weidmueller-change-firewall-configuration.md
+  name: change-firewall-configuration
+  api: openapi/weidmueller-administration-openapi.yml
+  operations:
+  - get_firewall_config
+  - get_firewall_active_config
+  - update_firewall_active_config
+  - reload_firewall_config
+  - update_firewall_config
+- file: weidmueller-generate-a-log-report.md
+  name: generate-a-log-report
+  api: openapi/weidmueller-administration-openapi.yml
+  operations:
+  - get_logging_sources
+  - get_logging_entries
+  - create_logging_report
+  - get_operation
+  - get_logging_report
+- file: weidmueller-inspect-device.md
+  name: inspect-device
+  api: openapi/weidmueller-administration-openapi.yml
+  operations:
+  - ping
+  - get_system_info
+  - get_system_nameplate
+  - get_system_disks
+- file: weidmueller-read-and-write-data-hub-variables.md
+  name: read-and-write-data-hub-variables
+  api: openapi/weidmueller-variable-http-openapi.yml
+  operations:
+  - get_providers_handler
+  - get_variables_handler
+  - get_single_variable_handler
+  - post_single_variable_handler
+  - post_multiple_variables_handler
+- file: weidmueller-update-network-configuration.md
+  name: update-network-configuration
+  api: openapi/weidmueller-administration-openapi.yml
+  operations:
+  - get_network_config
+  - update_network_config
+  - get_network_state

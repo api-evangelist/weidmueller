@@ -1,0 +1,651 @@
+{
+  "@context": {
+    "@vocab": "https://weidmueller.com/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "weidmueller": "https://weidmueller.com/schema#",
+    "AddressInformation": "weidmueller:AddressInformation",
+    "CityTown": {
+      "@id": "weidmueller:CityTown",
+      "@type": "xsd:string"
+    },
+    "NationalCode": {
+      "@id": "weidmueller:NationalCode",
+      "@type": "xsd:string"
+    },
+    "Street": {
+      "@id": "weidmueller:Street",
+      "@type": "xsd:string"
+    },
+    "Zipcode": {
+      "@id": "weidmueller:Zipcode",
+      "@type": "xsd:string"
+    },
+    "AllowedRsMode": "weidmueller:AllowedRsMode",
+    "CanInterfaceConfig": "weidmueller:CanInterfaceConfig",
+    "enable_termination_resistor": {
+      "@id": "weidmueller:enable_termination_resistor",
+      "@type": "xsd:boolean"
+    },
+    "CanInterfaceState": "weidmueller:CanInterfaceState",
+    "alt_names": {
+      "@id": "weidmueller:alt_names",
+      "@container": "@list"
+    },
+    "name": {
+      "@id": "weidmueller:name",
+      "@type": "xsd:string"
+    },
+    "termination_resistance_ohm": {
+      "@id": "weidmueller:termination_resistance_ohm",
+      "@type": "xsd:integer"
+    },
+    "CertificateEntry": "weidmueller:CertificateEntry",
+    "content": {
+      "@id": "weidmueller:content",
+      "@type": "xsd:string"
+    },
+    "Certificates": "weidmueller:Certificates",
+    "client_cert": {
+      "@id": "weidmueller:client_cert"
+    },
+    "client_key": {
+      "@id": "weidmueller:client_key"
+    },
+    "server_ca": {
+      "@id": "weidmueller:server_ca"
+    },
+    "CpuIsolationConfig": "weidmueller:CpuIsolationConfig",
+    "enabled": {
+      "@id": "weidmueller:enabled",
+      "@type": "xsd:boolean"
+    },
+    "CpuIsolationState": "weidmueller:CpuIsolationState",
+    "effective_cpus": {
+      "@id": "weidmueller:effective_cpus",
+      "@container": "@list"
+    },
+    "CreateLogReportResponse": "weidmueller:CreateLogReportResponse",
+    "operation_id": {
+      "@id": "weidmueller:operation_id",
+      "@type": "xsd:string"
+    },
+    "DeviceNameplate": "weidmueller:DeviceNameplate",
+    "HardwareVersion": {
+      "@id": "weidmueller:HardwareVersion",
+      "@type": "xsd:string"
+    },
+    "ManufacturerName": {
+      "@id": "weidmueller:ManufacturerName",
+      "@type": "xsd:string"
+    },
+    "ManufacturerProductDesignation": {
+      "@id": "weidmueller:ManufacturerProductDesignation",
+      "@type": "xsd:string"
+    },
+    "ManufacturerProductType": {
+      "@id": "weidmueller:ManufacturerProductType",
+      "@type": "xsd:string"
+    },
+    "OrderCodeOfManufacturer": {
+      "@id": "weidmueller:OrderCodeOfManufacturer",
+      "@type": "xsd:string"
+    },
+    "SerialNumber": {
+      "@id": "weidmueller:SerialNumber",
+      "@type": "xsd:string"
+    },
+    "SoftwareVersion": {
+      "@id": "weidmueller:SoftwareVersion",
+      "@type": "xsd:string"
+    },
+    "URIOfTheProduct": {
+      "@id": "weidmueller:URIOfTheProduct",
+      "@type": "xsd:string"
+    },
+    "YearOfConstruction": {
+      "@id": "weidmueller:YearOfConstruction",
+      "@type": "xsd:string"
+    },
+    "DhcpIpv4Range": "weidmueller:DhcpIpv4Range",
+    "end": {
+      "@id": "weidmueller:end",
+      "@type": "@id"
+    },
+    "start": {
+      "@id": "weidmueller:start",
+      "@type": "@id"
+    },
+    "Disk": "weidmueller:Disk",
+    "device_path": {
+      "@id": "weidmueller:device_path",
+      "@type": "xsd:string"
+    },
+    "file_system": {
+      "@id": "weidmueller:file_system",
+      "@type": "xsd:string"
+    },
+    "free_size": {
+      "@id": "weidmueller:free_size",
+      "@type": "xsd:integer"
+    },
+    "mount_points": {
+      "@id": "weidmueller:mount_points",
+      "@container": "@list"
+    },
+    "storage_type": {
+      "@id": "weidmueller:storage_type",
+      "@type": "@id"
+    },
+    "total_size": {
+      "@id": "weidmueller:total_size",
+      "@type": "xsd:integer"
+    },
+    "Disks": "weidmueller:Disks",
+    "items": {
+      "@id": "weidmueller:items",
+      "@container": "@list"
+    },
+    "DnatActionForward": "weidmueller:DnatActionForward",
+    "mode": {
+      "@id": "weidmueller:mode",
+      "@type": "xsd:string"
+    },
+    "new_destination": {
+      "@id": "weidmueller:new_destination",
+      "@type": "xsd:string"
+    },
+    "new_dport": {
+      "@id": "weidmueller:new_dport",
+      "@type": "xsd:integer"
+    },
+    "DnatActionRedirect": "weidmueller:DnatActionRedirect",
+    "local_dport": {
+      "@id": "weidmueller:local_dport",
+      "@type": "xsd:integer"
+    },
+    "FailoverGlobalConfig": "weidmueller:FailoverGlobalConfig",
+    "failure_threshold": {
+      "@id": "weidmueller:failure_threshold",
+      "@type": "xsd:integer"
+    },
+    "probe_interval_seconds": {
+      "@id": "weidmueller:probe_interval_seconds",
+      "@type": "xsd:integer"
+    },
+    "success_threshold": {
+      "@id": "weidmueller:success_threshold",
+      "@type": "xsd:integer"
+    },
+    "FailoverInterfaceConfig": "weidmueller:FailoverInterfaceConfig",
+    "failed_metric": {
+      "@id": "weidmueller:failed_metric",
+      "@type": "xsd:integer"
+    },
+    "probe_target": {
+      "@id": "weidmueller:probe_target",
+      "@type": "@id"
+    },
+    "FilterRules": "weidmueller:FilterRules",
+    "forward": {
+      "@id": "weidmueller:forward"
+    },
+    "input": {
+      "@id": "weidmueller:input"
+    },
+    "output": {
+      "@id": "weidmueller:output"
+    },
+    "policy": {
+      "@id": "weidmueller:policy"
+    },
+    "FirewallConfig": "weidmueller:FirewallConfig",
+    "filter": {
+      "@id": "weidmueller:filter",
+      "@type": "@id"
+    },
+    "nat": {
+      "@id": "weidmueller:nat",
+      "@type": "@id"
+    },
+    "Firmware": "weidmueller:Firmware",
+    "version": {
+      "@id": "weidmueller:version",
+      "@type": "xsd:string"
+    },
+    "ForwardRule": "weidmueller:ForwardRule",
+    "action": {
+      "@id": "weidmueller:action",
+      "@type": "@id"
+    },
+    "description": {
+      "@id": "weidmueller:description",
+      "@type": "xsd:string"
+    },
+    "match": {
+      "@id": "weidmueller:match",
+      "@type": "@id"
+    },
+    "priority": {
+      "@id": "weidmueller:priority",
+      "@type": "xsd:integer"
+    },
+    "GlobalDnsServers": "weidmueller:GlobalDnsServers",
+    "searches": {
+      "@id": "weidmueller:searches",
+      "@container": "@list"
+    },
+    "servers": {
+      "@id": "weidmueller:servers",
+      "@container": "@list"
+    },
+    "GpgKey": "weidmueller:GpgKey",
+    "HttpErrorPayload": "weidmueller:HttpErrorPayload",
+    "detail": {
+      "@id": "weidmueller:detail",
+      "@type": "xsd:string"
+    },
+    "instance": {
+      "@id": "weidmueller:instance",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "weidmueller:status",
+      "@type": "xsd:integer"
+    },
+    "title": {
+      "@id": "weidmueller:title",
+      "@type": "xsd:string"
+    },
+    "type": {
+      "@id": "weidmueller:type",
+      "@type": "xsd:string"
+    },
+    "InputRule": "weidmueller:InputRule",
+    "InterfaceConfig": "weidmueller:InterfaceConfig",
+    "ipv4_config": {
+      "@id": "weidmueller:ipv4_config",
+      "@type": "@id"
+    },
+    "InterfaceFailoverState": "weidmueller:InterfaceFailoverState",
+    "fail_count": {
+      "@id": "weidmueller:fail_count",
+      "@type": "xsd:integer"
+    },
+    "state": {
+      "@id": "weidmueller:state",
+      "@type": "@id"
+    },
+    "success_count": {
+      "@id": "weidmueller:success_count",
+      "@type": "xsd:integer"
+    },
+    "InterfacePolicy": "weidmueller:InterfacePolicy",
+    "InterfaceProbeState": "weidmueller:InterfaceProbeState",
+    "InterfaceState": "weidmueller:InterfaceState",
+    "failover": {
+      "@id": "weidmueller:failover"
+    },
+    "ipv4": {
+      "@id": "weidmueller:ipv4",
+      "@type": "@id"
+    },
+    "InterfaceType": "weidmueller:InterfaceType",
+    "Ipv4Config": "weidmueller:Ipv4Config",
+    "addresses": {
+      "@id": "weidmueller:addresses",
+      "@container": "@list"
+    },
+    "dhcp": {
+      "@id": "weidmueller:dhcp",
+      "@type": "xsd:boolean"
+    },
+    "dns": {
+      "@id": "weidmueller:dns",
+      "@container": "@list"
+    },
+    "gateway": {
+      "@id": "weidmueller:gateway"
+    },
+    "metric": {
+      "@id": "weidmueller:metric",
+      "@type": "xsd:integer"
+    },
+    "shared_mode": {
+      "@id": "weidmueller:shared_mode",
+      "@type": "@id"
+    },
+    "Ipv4Route": "weidmueller:Ipv4Route",
+    "destination": {
+      "@id": "weidmueller:destination",
+      "@type": "@id"
+    },
+    "interface": {
+      "@id": "weidmueller:interface",
+      "@type": "xsd:string"
+    },
+    "Ipv4State": "weidmueller:Ipv4State",
+    "activated": {
+      "@id": "weidmueller:activated",
+      "@type": "xsd:boolean"
+    },
+    "Ipv4Subnet": "weidmueller:Ipv4Subnet",
+    "ip": {
+      "@id": "weidmueller:ip",
+      "@type": "@id"
+    },
+    "prefix_length": {
+      "@id": "weidmueller:prefix_length",
+      "@type": "@id"
+    },
+    "ListTimezonesResponse": "weidmueller:ListTimezonesResponse",
+    "LogEntry": "weidmueller:LogEntry",
+    "message": {
+      "@id": "weidmueller:message",
+      "@type": "xsd:string"
+    },
+    "source": {
+      "@id": "weidmueller:source",
+      "@type": "@id"
+    },
+    "timestamp": {
+      "@id": "weidmueller:timestamp",
+      "@type": "xsd:dateTime"
+    },
+    "LogEntryResponse": "weidmueller:LogEntryResponse",
+    "next_cursor": {
+      "@id": "weidmueller:next_cursor",
+      "@type": "xsd:string"
+    },
+    "LogSource": "weidmueller:LogSource",
+    "id": {
+      "@id": "weidmueller:id",
+      "@type": "xsd:string"
+    },
+    "LogSourcesResponse": "weidmueller:LogSourcesResponse",
+    "ManualTimeSettings": "weidmueller:ManualTimeSettings",
+    "date_time": {
+      "@id": "weidmueller:date_time",
+      "@type": "xsd:dateTime"
+    },
+    "method": {
+      "@id": "weidmueller:method",
+      "@type": "xsd:string"
+    },
+    "MasqueradeAction": "weidmueller:MasqueradeAction",
+    "Memory": "weidmueller:Memory",
+    "available_size": {
+      "@id": "weidmueller:available_size",
+      "@type": "xsd:integer"
+    },
+    "NatRules": "weidmueller:NatRules",
+    "postrouting": {
+      "@id": "weidmueller:postrouting"
+    },
+    "prerouting": {
+      "@id": "weidmueller:prerouting"
+    },
+    "NetworkConfig": "weidmueller:NetworkConfig",
+    "hostname": {
+      "@id": "weidmueller:hostname",
+      "@type": "xsd:string"
+    },
+    "interfaces": {
+      "@id": "weidmueller:interfaces"
+    },
+    "service_interface": {
+      "@id": "weidmueller:service_interface"
+    },
+    "NetworkState": "weidmueller:NetworkState",
+    "dns_resolver": {
+      "@id": "weidmueller:dns_resolver",
+      "@type": "@id"
+    },
+    "routes": {
+      "@id": "weidmueller:routes",
+      "@container": "@list"
+    },
+    "NtpRuntimeState": "weidmueller:NtpRuntimeState",
+    "current_server": {
+      "@id": "weidmueller:current_server",
+      "@type": "xsd:string"
+    },
+    "link_ntp_servers": {
+      "@id": "weidmueller:link_ntp_servers",
+      "@container": "@list"
+    },
+    "ntp_synchronized": {
+      "@id": "weidmueller:ntp_synchronized",
+      "@type": "xsd:boolean"
+    },
+    "NtpSettings": "weidmueller:NtpSettings",
+    "ntp_servers": {
+      "@id": "weidmueller:ntp_servers",
+      "@container": "@list"
+    },
+    "OperationStateCompleted": "weidmueller:OperationStateCompleted",
+    "completed_at": {
+      "@id": "weidmueller:completed_at",
+      "@type": "xsd:dateTime"
+    },
+    "created_at": {
+      "@id": "weidmueller:created_at",
+      "@type": "xsd:dateTime"
+    },
+    "resource_id": {
+      "@id": "weidmueller:resource_id",
+      "@type": "xsd:string"
+    },
+    "resource_url": {
+      "@id": "weidmueller:resource_url",
+      "@type": "@id"
+    },
+    "OperationStateFailed": "weidmueller:OperationStateFailed",
+    "failed_at": {
+      "@id": "weidmueller:failed_at",
+      "@type": "xsd:dateTime"
+    },
+    "OperationStatePending": "weidmueller:OperationStatePending",
+    "OutputReachability": "weidmueller:OutputReachability",
+    "OutputRule": "weidmueller:OutputRule",
+    "OutputState": "weidmueller:OutputState",
+    "reachable": {
+      "@id": "weidmueller:reachable",
+      "@type": "@id"
+    },
+    "PartialCanInterfaceConfig": "weidmueller:PartialCanInterfaceConfig",
+    "PartialCertificateEntry": "weidmueller:PartialCertificateEntry",
+    "PartialCertificates": "weidmueller:PartialCertificates",
+    "PartialDhcpIpv4Range": "weidmueller:PartialDhcpIpv4Range",
+    "PartialDnatActionForward": "weidmueller:PartialDnatActionForward",
+    "PartialDnatActionRedirect": "weidmueller:PartialDnatActionRedirect",
+    "PartialFailoverGlobalConfig": "weidmueller:PartialFailoverGlobalConfig",
+    "PartialFailoverInterfaceConfig": "weidmueller:PartialFailoverInterfaceConfig",
+    "PartialFilterRules": "weidmueller:PartialFilterRules",
+    "PartialFirewallConfig": "weidmueller:PartialFirewallConfig",
+    "PartialForwardRule": "weidmueller:PartialForwardRule",
+    "PartialInputRule": "weidmueller:PartialInputRule",
+    "PartialInterfaceConfig": "weidmueller:PartialInterfaceConfig",
+    "PartialInterfacePolicy": "weidmueller:PartialInterfacePolicy",
+    "PartialIpv4Config": "weidmueller:PartialIpv4Config",
+    "PartialNatRules": "weidmueller:PartialNatRules",
+    "PartialNetworkConfig": "weidmueller:PartialNetworkConfig",
+    "PartialOutputRule": "weidmueller:PartialOutputRule",
+    "PartialPostroutingRule": "weidmueller:PartialPostroutingRule",
+    "PartialPreinstalledGpgKeysEnabled": "weidmueller:PartialPreinstalledGpgKeysEnabled",
+    "PartialPreroutingRule": "weidmueller:PartialPreroutingRule",
+    "PartialRecipeSigning": "weidmueller:PartialRecipeSigning",
+    "user_gpg_keys": {
+      "@id": "weidmueller:user_gpg_keys"
+    },
+    "PartialRemovableMediaUpdateConfig": "weidmueller:PartialRemovableMediaUpdateConfig",
+    "recipe_signing": {
+      "@id": "weidmueller:recipe_signing",
+      "@type": "@id"
+    },
+    "PartialRs232Config": "weidmueller:PartialRs232Config",
+    "PartialRs485Config": "weidmueller:PartialRs485Config",
+    "PartialSerialInterfacesConfig": "weidmueller:PartialSerialInterfacesConfig",
+    "can_interfaces": {
+      "@id": "weidmueller:can_interfaces"
+    },
+    "rs_interfaces": {
+      "@id": "weidmueller:rs_interfaces"
+    },
+    "PartialServiceInterfaceConfig": "weidmueller:PartialServiceInterfaceConfig",
+    "PartialSharedModeConfig": "weidmueller:PartialSharedModeConfig",
+    "dhcp_ip_range": {
+      "@id": "weidmueller:dhcp_ip_range"
+    },
+    "dhcp_lease_time_sec": {
+      "@id": "weidmueller:dhcp_lease_time_sec",
+      "@type": "xsd:integer"
+    },
+    "PartialSignedUpdateConfig": "weidmueller:PartialSignedUpdateConfig",
+    "preinstalled_gpg_keys": {
+      "@id": "weidmueller:preinstalled_gpg_keys",
+      "@type": "@id"
+    },
+    "PartialSnatAction": "weidmueller:PartialSnatAction",
+    "new_source": {
+      "@id": "weidmueller:new_source",
+      "@type": "xsd:string"
+    },
+    "new_sport": {
+      "@id": "weidmueller:new_sport",
+      "@type": "xsd:integer"
+    },
+    "PartialUpdateSettings": "weidmueller:PartialUpdateSettings",
+    "removable_media_update": {
+      "@id": "weidmueller:removable_media_update",
+      "@type": "@id"
+    },
+    "signed_update": {
+      "@id": "weidmueller:signed_update",
+      "@type": "@id"
+    },
+    "PolicyType": "weidmueller:PolicyType",
+    "PostroutingRule": "weidmueller:PostroutingRule",
+    "PreinstalledGpgKeysEnabled": "weidmueller:PreinstalledGpgKeysEnabled",
+    "PreroutingRule": "weidmueller:PreroutingRule",
+    "RealtimeConfig": "weidmueller:RealtimeConfig",
+    "cpu_isolation": {
+      "@id": "weidmueller:cpu_isolation",
+      "@type": "@id"
+    },
+    "RealtimeState": "weidmueller:RealtimeState",
+    "RecipeSigning": "weidmueller:RecipeSigning",
+    "RemovableMediaUpdateConfig": "weidmueller:RemovableMediaUpdateConfig",
+    "RootAccessConfig": "weidmueller:RootAccessConfig",
+    "Rs232Config": "weidmueller:Rs232Config",
+    "Rs485Config": "weidmueller:Rs485Config",
+    "RsInterfaceState": "weidmueller:RsInterfaceState",
+    "supported_modes": {
+      "@id": "weidmueller:supported_modes",
+      "@container": "@list"
+    },
+    "RuleAction": "weidmueller:RuleAction",
+    "SecuritySettings": "weidmueller:SecuritySettings",
+    "root_access": {
+      "@id": "weidmueller:root_access",
+      "@type": "@id"
+    },
+    "SerialInterfacesConfig": "weidmueller:SerialInterfacesConfig",
+    "SerialInterfacesState": "weidmueller:SerialInterfacesState",
+    "allow_add_can_interfaces": {
+      "@id": "weidmueller:allow_add_can_interfaces",
+      "@type": "xsd:boolean"
+    },
+    "allow_add_rs_interfaces": {
+      "@id": "weidmueller:allow_add_rs_interfaces",
+      "@type": "xsd:boolean"
+    },
+    "ServerCaNoVerify": "weidmueller:ServerCaNoVerify",
+    "ServerCaVerify": "weidmueller:ServerCaVerify",
+    "ServerCaVerifyWithCa": "weidmueller:ServerCaVerifyWithCa",
+    "ca": {
+      "@id": "weidmueller:ca",
+      "@type": "xsd:string"
+    },
+    "ServiceInterfaceConfig": "weidmueller:ServiceInterfaceConfig",
+    "ServiceStatus": "weidmueller:ServiceStatus",
+    "SharedModeConfig": "weidmueller:SharedModeConfig",
+    "SignedUpdateConfig": "weidmueller:SignedUpdateConfig",
+    "SnatAction": "weidmueller:SnatAction",
+    "StorageType": "weidmueller:StorageType",
+    "SyslogConfig": "weidmueller:SyslogConfig",
+    "outputs": {
+      "@id": "weidmueller:outputs"
+    },
+    "SyslogDestination": "weidmueller:SyslogDestination",
+    "format": {
+      "@id": "weidmueller:format",
+      "@type": "@id"
+    },
+    "host": {
+      "@id": "weidmueller:host",
+      "@type": "xsd:string"
+    },
+    "port": {
+      "@id": "weidmueller:port",
+      "@type": "xsd:integer"
+    },
+    "tls": {
+      "@id": "weidmueller:tls",
+      "@type": "@id"
+    },
+    "transport": {
+      "@id": "weidmueller:transport",
+      "@type": "@id"
+    },
+    "SyslogFacility": "weidmueller:SyslogFacility",
+    "SyslogFilter": "weidmueller:SyslogFilter",
+    "facilities": {
+      "@id": "weidmueller:facilities",
+      "@container": "@list"
+    },
+    "identifiers": {
+      "@id": "weidmueller:identifiers",
+      "@container": "@list"
+    },
+    "levels": {
+      "@id": "weidmueller:levels",
+      "@container": "@list"
+    },
+    "units": {
+      "@id": "weidmueller:units",
+      "@container": "@list"
+    },
+    "SyslogFormat": "weidmueller:SyslogFormat",
+    "SyslogLevel": "weidmueller:SyslogLevel",
+    "SyslogOutputConfig": "weidmueller:SyslogOutputConfig",
+    "SyslogState": "weidmueller:SyslogState",
+    "SystemInformation": "weidmueller:SystemInformation",
+    "cpu_architecture": {
+      "@id": "weidmueller:cpu_architecture",
+      "@type": "xsd:string"
+    },
+    "firmware": {
+      "@id": "weidmueller:firmware",
+      "@type": "@id"
+    },
+    "memory": {
+      "@id": "weidmueller:memory",
+      "@type": "@id"
+    },
+    "TimeConfig": "weidmueller:TimeConfig",
+    "timezone": {
+      "@id": "weidmueller:timezone",
+      "@type": "xsd:string"
+    }
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Weidmüller API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Weidmüller's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-09) from openapi/weidmueller-administration-openapi.yml, openapi/weidmueller-variable-http-openapi.yml.",
+  "dcterms:created": "2026-10-09",
+  "dcterms:source": [
+    "openapi/weidmueller-administration-openapi.yml",
+    "openapi/weidmueller-variable-http-openapi.yml"
+  ]
+}

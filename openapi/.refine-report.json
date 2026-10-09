@@ -1,0 +1,56 @@
+{
+  "provider": "weidmueller",
+  "sources": [
+    "_original/administration-openapi.yaml",
+    "_original/variable-http-openapi.yaml",
+    "weidmueller-administration-openapi.yml",
+    "weidmueller-variable-http-openapi.yml"
+  ],
+  "outputs": [
+    "weidmueller-firewall-api-openapi.yml",
+    "weidmueller-logging-api-openapi.yml",
+    "weidmueller-network-api-openapi.yml",
+    "weidmueller-openapi-api-openapi.yml",
+    "weidmueller-operations-api-openapi.yml",
+    "weidmueller-ping-api-openapi.yml",
+    "weidmueller-realtime-api-openapi.yml",
+    "weidmueller-recovery-api-openapi.yml",
+    "weidmueller-security-api-openapi.yml",
+    "weidmueller-serial-interfaces-api-openapi.yml",
+    "weidmueller-syslog-api-openapi.yml",
+    "weidmueller-system-api-openapi.yml",
+    "weidmueller-time-api-openapi.yml",
+    "weidmueller-update-api-openapi.yml",
+    "weidmueller-consumer-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/weidmueller-administration-openapi.yml",
+    "archived openapi/weidmueller-variable-http-openapi.yml"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "administration-openapi.yaml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "variable-http-openapi.yaml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "weidmueller-administration-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "weidmueller-variable-http-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "tag 'firewall' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'logging' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'network' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'openapi' spans 4 source specs (administration-openapi.yaml, variable-http-openapi.yaml, weidmueller-administration-openapi.yml, weidmueller-variable-http-openapi.yml): per-path servers applied",
+    "tag 'operations' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'ping' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'realtime' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'recovery' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'security' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'serial-interfaces' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'syslog' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'system' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'time' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'update' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
+    "tag 'Consumer' spans 2 source specs (variable-http-openapi.yaml, weidmueller-variable-http-openapi.yml): per-path servers applied",
+    "apis.yml register: written (+15 apis, 16 total)"
+  ],
+  "skipped": []
+}

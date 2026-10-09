@@ -1,0 +1,67 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist agent overlay for Weidmüller u-OS Data Hub Variable-HTTP API
+  version: 1.0.0
+extends: ../openapi/_original/weidmueller-variable-http-openapi.yml
+x-generated: '2026-10-09'
+x-method: generated
+x-source: openapi/_original/variable-http-openapi.yaml
+x-rationale: Adds provider documentation links and per-operation x-agent annotations (MCP candidate tool name, read-only flag,
+  required OAuth2 scopes copied from each operation security requirement) without mutating the original spec.
+actions:
+- target: $.info
+  description: Add provider docs and API Evangelist provenance.
+  update:
+    x-provider: Weidmüller
+    x-source-repository: https://github.com/weidmueller/u-os-hub-api
+    x-deployment-note: Served on the customer u-OS device; the spec servers entry is a relative base path and names no public
+      host.
+- target: $
+  description: Link the provider documentation.
+  update:
+    externalDocs:
+      description: Weidmüller u-OS online documentation
+      url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/index.html
+- target: $.paths['/providers'].get
+  description: Annotate get_providers_handler for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_providers_handler
+      read_only: true
+      required_scopes:
+      - hub.variables.readonly
+      - hub.variables.readwrite
+- target: $.paths['/providers/{provider_id}/variables'].get
+  description: Annotate get_variables_handler for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_variables_handler
+      read_only: true
+      required_scopes:
+      - hub.variables.readonly
+      - hub.variables.readwrite
+- target: $.paths['/providers/{provider_id}/variables'].post
+  description: Annotate post_multiple_variables_handler for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: post_multiple_variables_handler
+      read_only: false
+      required_scopes:
+      - hub.variables.readwrite
+- target: $.paths['/providers/{provider_id}/variables/{variable_key}'].get
+  description: Annotate get_single_variable_handler for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: get_single_variable_handler
+      read_only: true
+      required_scopes:
+      - hub.variables.readonly
+      - hub.variables.readwrite
+- target: $.paths['/providers/{provider_id}/variables/{variable_key}'].post
+  description: Annotate post_single_variable_handler for agent use (derived from method and declared OAuth2 scopes).
+  update:
+    x-agent:
+      mcp_tool: post_single_variable_handler
+      read_only: false
+      required_scopes:
+      - hub.variables.readwrite

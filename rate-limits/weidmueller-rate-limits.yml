@@ -1,0 +1,8 @@
+generated: '2026-10-09'
+method: none
+source: https://github.com/weidmueller/u-os-hub-api/blob/main/openapi/README.adoc
+name: Weidmüller u-OS Data Hub API Rate Limits
+limit_count: 0
+limits: []
+note: Neither the u-os-hub-api READMEs, the OpenAPI specs (no 429 responses, no rate-limit headers) nor the support.weidmueller.com
+  Data Hub pages document any rate limit. The APIs run on the customer's own u-OS device.

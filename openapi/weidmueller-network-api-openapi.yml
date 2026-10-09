@@ -1,0 +1,861 @@
+openapi: 3.2.0
+info:
+  title: Weidmueller Network API
+  version: 1.5.0-next
+  contact:
+    name: Weidmüller
+  license:
+    name: MIT
+    identifier: MIT
+  description: 'Operations tagged network across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: /u-os-adm/api/v1
+tags:
+- name: Network
+  description: API for network settings and state of u-OS
+paths:
+  /network/config:
+    get:
+      tags:
+      - Network
+      summary: Get the current network configuration of the device
+      description: This only returns fields that can be configured and changed via the HTTP API.
+      operationId: get_network_config
+      responses:
+        '200':
+          description: Network config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkConfig'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.network.readonly
+      - OAuth2:
+        - u-os-adm.network.readwrite
+    put:
+      tags:
+      - Network
+      summary: Set the full network configuration of the device
+      description: 'This endpoint sets the network configuration of the device. Must include all supported settings and interfaces.
+
+        Will return the updated configuration on success.
+
+
+        Note that some network properties are not yet supported by the API.
+
+        These properties will be unaffected when applying the changes, thus preserving any manual changes.'
+      operationId: set_network_config
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NetworkConfig'
+        required: true
+      responses:
+        '200':
+          description: Network config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkConfig'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.network.readwrite
+    patch:
+      tags:
+      - Network
+      summary: Modify the network configuration of the device
+      description: 'This endpoint modifies the network configuration of the device by applying a JSON merge patch (https://datatracker.ietf.org/doc/html/rfc7396)
+
+        to the current configuration.
+
+        Will return the updated configuration after applying the patch on success.
+
+
+        Note that some network properties are not yet supported by the API.
+
+        These properties will be unaffected when applying the changes, thus preserving any manual changes.'
+      operationId: update_network_config
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/PartialNetworkConfig'
+        required: true
+      responses:
+        '200':
+          description: Network config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkConfig'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.network.readwrite
+    servers:
+    - url: /u-os-adm/api/v1
+  /network/state:
+    get:
+      tags:
+      - Network
+      summary: Get the current network state of the device
+      description: This includes properties that can not be configured via the HTTP API, like the current IP addresses and routing table.
+      operationId: get_network_state
+      responses:
+        '200':
+          description: Network state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkState'
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.network.readonly
+      - OAuth2:
+        - u-os-adm.network.readwrite
+    servers:
+    - url: /u-os-adm/api/v1
+  /network:factory-reset:
+    post:
+      tags:
+      - Network
+      summary: Triggers a network settings factory reset
+      description: Resets all network settings to factory defaults, which erases all user-defined network configurations on the system.
+      operationId: network_factory_reset
+      parameters:
+      - name: do_reboot
+        in: query
+        description: Whether the system should reboot after resetting the network settings.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Network settings reset successfully.
+        default:
+          description: Common HTTP Error codes may be thrown by this method, such as 400, 401, 403, 404, 412, 422 or 500. See body for detailed error info.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/HttpErrorPayload'
+      security:
+      - OAuth2:
+        - u-os-adm.network.readwrite
+    servers:
+    - url: /u-os-adm/api/v1
+components:
+  schemas:
+    InterfaceType:
+      type: string
+      description: The type of network interface.
+      enum:
+      - ETHERNET
+      - USB
+    InterfaceProbeState:
+      type: string
+      description: 'The current failover probe state of a monitored interface.
+
+
+        - `HEALTHY`: Enabled and passing probes.
+
+        - `PROBING`: Transitional state on the path to failure or recovery.
+
+        - `FAILED`: Penalised — using an elevated metric because probes are failing.'
+      enum:
+      - HEALTHY
+      - PROBING
+      - FAILED
+    FailoverInterfaceConfig:
+      type: object
+      description: 'Failover configuration for a single monitored interface.
+
+
+        When enabled, the probe loop checks connectivity on this interface. If
+
+        `failure_threshold` consecutive probes fail the interface is penalised by
+
+        settings its active metric to `failed_metric`. Once `success_threshold`
+
+        consecutive probes succeed the metric is restored to the interface''s
+
+        configured `metric` value.'
+      required:
+      - enabled
+      - probe_target
+      - failed_metric
+      properties:
+        enabled:
+          type: boolean
+          description: Whether failover probing is enabled for this interface.
+        failed_metric:
+          type: integer
+          format: int32
+          description: 'Network interface metric (priority) that is applied when the interface has failed probing.
+
+            Should be higher than all normal interface metrics to ensure traffic is routed through healthy interfaces.'
+          example: 20000
+          maximum: 2147483647
+          minimum: 1
+        probe_target:
+          $ref: '#/components/schemas/ProbeTarget'
+          description: Probe target for connectivity checks (IPv4 address or hostname, optionally with port e.g. "1.1.1.1:5000").
+    PartialInterfaceConfig:
+      type: object
+      description: Represents the configuration of a single network interface. (PATCH)
+      properties:
+        enabled:
+          type: boolean
+        ipv4_config:
+          $ref: '#/components/schemas/PartialIpv4Config'
+    InterfaceConfig:
+      type: object
+      description: Represents the configuration of a single network interface.
+      required:
+      - ipv4_config
+      properties:
+        enabled:
+          type: boolean
+        ipv4_config:
+          $ref: '#/components/schemas/Ipv4Config'
+    Ipv4State:
+      type: object
+      description: Represents the IPv4 state of a network interface.
+      required:
+      - activated
+      properties:
+        activated:
+          type: boolean
+          description: Activated is true when the connection is active and a cable is plugged in. Otherwise false.
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4Subnet'
+    PartialNetworkConfig:
+      type: object
+      description: Used for writing the network configuration. All fields are required to be present, but can be empty in some cases. (PATCH)
+      properties:
+        failover:
+          $ref: '#/components/schemas/PartialFailoverGlobalConfig'
+          description: Global failover probe settings.
+        hostname:
+          type: string
+          format: hostname
+          example: wm-uc20-m3000
+          maxLength: 63
+          minLength: 1
+        interfaces:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PartialInterfaceConfig'
+          propertyNames:
+            type: string
+          example:
+            eth-x4:
+              ipv4_config:
+                dhcp: false
+                gateway: null
+                shared_mode:
+                  enabled: true
+            eth-x5:
+              enabled: true
+              ipv4_config:
+                dhcp: true
+        service_interface:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/PartialServiceInterfaceConfig'
+    SharedModeConfig:
+      type: object
+      description: Configuration options for interface sharing
+      required:
+      - enabled
+      properties:
+        dhcp_ip_range:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/DhcpIpv4Range'
+            description: 'Configure the DHCP server IP range.
+
+
+              The IP range must be in the same subnet as the server address, otherwise an error will be returned.
+
+              If not set, an IP range adjacent to the server address will be used.
+
+              Should not contain network address or broadcast address.'
+        dhcp_lease_time_sec:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          description: 'Configure the DHCP server lease time in seconds.
+
+
+            Allowed values:
+
+
+            - 0 or empty: Default lease time (1h)
+
+            - 2147483647 (max int32): Infinite lease time
+
+            - 120-31536000: Valid range between 2 minutes and 1 year'
+          minimum: 0
+        enabled:
+          type: boolean
+          description: 'If enabled, this device acts as a mini router and may provide internet access to other devices connected to it.
+
+            This includes enabling a DHCP server on the device, which will assign IP addresses to connected devices, as well as hosting a DNS server.
+
+            Traffic will be forwarded through the outbound interface with the highest priority (lowest route metric).
+
+
+            If enabled, all other properties of the interface are ignored, except for the first IP address in the addresses list,
+
+            which is used as the server address for the DHCP server.'
+    InterfaceFailoverState:
+      type: object
+      description: Failover state of a single interface exposed via the network state endpoint.
+      required:
+      - state
+      - fail_count
+      - success_count
+      properties:
+        fail_count:
+          type: integer
+          format: int32
+          description: Number of consecutive failed probes since the last success.
+          minimum: 0
+        state:
+          $ref: '#/components/schemas/InterfaceProbeState'
+          description: Current probe state of this interface.
+        success_count:
+          type: integer
+          format: int32
+          description: Number of consecutive successful probes since the last failure.
+          minimum: 0
+    Ipv4Route:
+      type: object
+      description: An IP route entry in the IPv4 routing table.
+      required:
+      - destination
+      - gateway
+      - interface
+      - metric
+      properties:
+        destination:
+          $ref: '#/components/schemas/Ipv4Subnet'
+        gateway:
+          $ref: '#/components/schemas/Ipv4String'
+        interface:
+          type: string
+          example: eth-x4
+        metric:
+          type: integer
+          format: int32
+          example: 103
+          minimum: 0
+    PartialServiceInterfaceConfig:
+      type: object
+      description: Represents the configuration of the service interface. (PATCH)
+      properties:
+        enabled:
+          type: boolean
+    PartialFailoverInterfaceConfig:
+      type: object
+      description: "Failover configuration for a single monitored interface.\n\n When enabled, the probe loop checks connectivity on this interface. If\n `failure_threshold` consecutive probes fail the interface is penalised by\n settings its active metric to `failed_metric`. Once `success_threshold`\n consecutive probes succeed the metric is restored to the interface's\n configured `metric` value. (PATCH)"
+      properties:
+        enabled:
+          type: boolean
+          description: Whether failover probing is enabled for this interface.
+        failed_metric:
+          type: integer
+          format: int32
+          description: 'Network interface metric (priority) that is applied when the interface has failed probing.
+
+            Should be higher than all normal interface metrics to ensure traffic is routed through healthy interfaces.'
+          example: 20000
+          maximum: 2147483647
+          minimum: 1
+        probe_target:
+          $ref: '#/components/schemas/ProbeTarget'
+          description: Probe target for connectivity checks (IPv4 address or hostname, optionally with port e.g. "1.1.1.1:5000").
+    DhcpIpv4Range:
+      type: object
+      description: Represents a range of IPv4 addresses
+      required:
+      - start
+      - end
+      properties:
+        end:
+          $ref: '#/components/schemas/Ipv4String'
+          description: End of the range (inclusive)
+        start:
+          $ref: '#/components/schemas/Ipv4String'
+          description: Start of the range (inclusive)
+    Ipv4String:
+      type: string
+      format: ipv4
+      description: Represents an IPv4 address in a string format.
+    Ipv4Subnet:
+      type: object
+      description: 'Ipv4 address with prefix length.
+
+
+        The prefix length is used to determine the network mask.'
+      required:
+      - ip
+      - prefix_length
+      properties:
+        ip:
+          $ref: '#/components/schemas/Ipv4String'
+        prefix_length:
+          $ref: '#/components/schemas/Ipv4PrefixLength'
+    PartialSharedModeConfig:
+      type: object
+      description: Configuration options for interface sharing (PATCH)
+      properties:
+        dhcp_ip_range:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/PartialDhcpIpv4Range'
+            description: 'Configure the DHCP server IP range.
+
+
+              The IP range must be in the same subnet as the server address, otherwise an error will be returned.
+
+              If not set, an IP range adjacent to the server address will be used.
+
+              Should not contain network address or broadcast address.'
+        dhcp_lease_time_sec:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          description: 'Configure the DHCP server lease time in seconds.
+
+
+            Allowed values:
+
+
+            - 0 or empty: Default lease time (1h)
+
+            - 2147483647 (max int32): Infinite lease time
+
+            - 120-31536000: Valid range between 2 minutes and 1 year'
+          minimum: 0
+        enabled:
+          type: boolean
+          description: 'If enabled, this device acts as a mini router and may provide internet access to other devices connected to it.
+
+            This includes enabling a DHCP server on the device, which will assign IP addresses to connected devices, as well as hosting a DNS server.
+
+            Traffic will be forwarded through the outbound interface with the highest priority (lowest route metric).
+
+
+            If enabled, all other properties of the interface are ignored, except for the first IP address in the addresses list,
+
+            which is used as the server address for the DHCP server.'
+    ServiceInterfaceConfig:
+      type: object
+      description: Represents the configuration of the service interface.
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+    HttpErrorPayload:
+      type: object
+      description: 'Common error payload structure for HTTP responses.
+
+
+        Based on [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457)'
+      required:
+      - type
+      - title
+      - status
+      properties:
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Optional details about the error
+          example: 'Low Level OS Error #1234'
+        instance:
+          type:
+          - string
+          - 'null'
+          format: uri-reference
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: null
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code generated by the origin server for this occurrence of the problem
+          example: 500
+          maximum: 599
+          minimum: 100
+        title:
+          type: string
+          description: Human-readable error message.
+          example: Something went wrong in the backend.
+        type:
+          type: string
+          format: uri-reference
+          description: 'A URI reference that identifies the problem type
+
+
+            The last part of the URI is always a `ErrorId`'
+          example: /u-os-adm/api/v1/errors/set-security-settings
+    PartialFailoverGlobalConfig:
+      type: object
+      description: "Global failover configuration.\n\n Controls the probe loop that monitors all configured interfaces and adjusts\n their route metrics based on connectivity probe results. (PATCH)"
+      properties:
+        failure_threshold:
+          type: integer
+          format: int32
+          description: Number of consecutive failed probes before an interface is considered failed and penalised.
+          example: 3
+          minimum: 1
+        probe_interval_seconds:
+          type: integer
+          format: int64
+          description: Interval between failover probes in seconds.
+          example: 10
+          minimum: 1
+        success_threshold:
+          type: integer
+          format: int32
+          description: Number of consecutive successful probes before an interface is considered healthy and unpenalised.
+          example: 3
+          minimum: 1
+    GlobalDnsServers:
+      type: object
+      description: 'Represents the global DNS servers used by the system.
+
+
+        The order of the servers represents their priority, with the first one being the primary DNS server unless an interface overrides it.'
+      required:
+      - servers
+      - searches
+      properties:
+        searches:
+          type: array
+          items:
+            type: string
+          example:
+          - .
+        servers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4String'
+    FailoverGlobalConfig:
+      type: object
+      description: 'Global failover configuration.
+
+
+        Controls the probe loop that monitors all configured interfaces and adjusts
+
+        their route metrics based on connectivity probe results.'
+      required:
+      - probe_interval_seconds
+      - failure_threshold
+      - success_threshold
+      properties:
+        failure_threshold:
+          type: integer
+          format: int32
+          description: Number of consecutive failed probes before an interface is considered failed and penalised.
+          example: 3
+          minimum: 1
+        probe_interval_seconds:
+          type: integer
+          format: int64
+          description: Interval between failover probes in seconds.
+          example: 10
+          minimum: 1
+        success_threshold:
+          type: integer
+          format: int32
+          description: Number of consecutive successful probes before an interface is considered healthy and unpenalised.
+          example: 3
+          minimum: 1
+    InterfaceState:
+      type: object
+      description: Represents the current state of a network interface.
+      required:
+      - type
+      - ipv4
+      properties:
+        failover:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/InterfaceFailoverState'
+            description: Failover state, present only when failover is configured globally.
+        ipv4:
+          $ref: '#/components/schemas/Ipv4State'
+        type:
+          $ref: '#/components/schemas/InterfaceType'
+    PartialIpv4Config:
+      type: object
+      description: Represents the IPv4 configuration of a network interface. (PATCH)
+      properties:
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4Subnet'
+        dhcp:
+          type: boolean
+        dns:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4String'
+        failover:
+          $ref: '#/components/schemas/PartialFailoverInterfaceConfig'
+        gateway:
+          oneOf:
+          - type: 'null'
+          - type: string
+            format: ipv4
+            description: Represents an IPv4 address in a string format.
+        metric:
+          type: integer
+          format: int64
+          description: 'Normal route metric (priority) for this interface. Lower values have higher priority.
+
+            If a value of -1 is specified, the system will choose the metric automatically.
+
+
+            If failover is enabled, the actual metric of the interface is
+
+            dynamic and may change between metric and `failed_metric` depending on the probe state.'
+          example: 100
+          maximum: 2147483647
+          minimum: -1
+        shared_mode:
+          $ref: '#/components/schemas/PartialSharedModeConfig'
+    NetworkConfig:
+      type: object
+      description: Used for writing the network configuration. All fields are required to be present, but can be empty in some cases.
+      required:
+      - hostname
+      - interfaces
+      properties:
+        failover:
+          $ref: '#/components/schemas/FailoverGlobalConfig'
+          description: Global failover probe settings.
+        hostname:
+          type: string
+          format: hostname
+          example: wm-uc20-m3000
+          maxLength: 63
+          minLength: 1
+        interfaces:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/InterfaceConfig'
+          propertyNames:
+            type: string
+          example:
+            eth-x4:
+              enabled: true
+              ipv4_config:
+                addresses:
+                - ip: 192.168.1.102
+                  prefix_length: 24
+                dhcp: false
+                dns:
+                - 8.8.8.8
+                failover:
+                  enabled: true
+                  failed_metric: 20000
+                  probe_target: dns.google
+                gateway: 192.168.1.1
+                metric: 200
+                shared_mode:
+                  dhcp_ip_range:
+                    end: 192.168.1.150
+                    start: 192.168.1.103
+                  dhcp_lease_time_sec: 3600
+                  enabled: true
+            eth-x5:
+              enabled: false
+              ipv4_config:
+                addresses: []
+                dhcp: true
+                dns: []
+                failover:
+                  enabled: true
+                  failed_metric: 20001
+                  probe_target: 1.1.1.1
+                gateway: null
+                metric: 100
+                shared_mode:
+                  dhcp_ip_range: null
+                  dhcp_lease_time_sec: null
+                  enabled: false
+        service_interface:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/ServiceInterfaceConfig'
+    NetworkState:
+      type: object
+      description: 'The current network state on the device.
+
+
+        Note that this may differ from the configuration, e.g. a DHCP interface has an address in the state, but not in the configuration.'
+      required:
+      - dns_resolver
+      - routes
+      - interfaces
+      properties:
+        dns_resolver:
+          $ref: '#/components/schemas/GlobalDnsServers'
+        interfaces:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/InterfaceState'
+          propertyNames:
+            type: string
+          example:
+            eth-x4:
+              ipv4:
+                activated: true
+                addresses:
+                - ip: 192.168.1.100
+                  prefix_length: 24
+              type: ETHERNET
+            eth-x5:
+              ipv4:
+                activated: true
+                addresses:
+                - ip: 192.168.1.101
+                  prefix_length: 24
+              type: ETHERNET
+        routes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4Route'
+    Ipv4Config:
+      type: object
+      description: Represents the IPv4 configuration of a network interface.
+      required:
+      - dhcp
+      - addresses
+      - gateway
+      - dns
+      properties:
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4Subnet'
+        dhcp:
+          type: boolean
+        dns:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4String'
+        failover:
+          $ref: '#/components/schemas/FailoverInterfaceConfig'
+        gateway:
+          oneOf:
+          - type: 'null'
+          - type: string
+            format: ipv4
+            description: Represents an IPv4 address in a string format.
+        metric:
+          type: integer
+          format: int64
+          description: 'Normal route metric (priority) for this interface. Lower values have higher priority.
+
+            If a value of -1 is specified, the system will choose the metric automatically.
+
+
+            If failover is enabled, the actual metric of the interface is
+
+            dynamic and may change between metric and `failed_metric` depending on the probe state.'
+          example: 100
+          maximum: 2147483647
+          minimum: -1
+        shared_mode:
+          $ref: '#/components/schemas/SharedModeConfig'
+    Ipv4PrefixLength:
+      type: integer
+      format: int32
+      examples:
+      - '24'
+      maximum: 32
+      minimum: 0
+    ProbeTarget:
+      type: string
+      description: IPv4 address or hostname used as the probe target, optionally with a port (e.g. "1.1.1.1:5000"). If no port is specified, port 443 is used. IPv4 addresses are recommended for deterministic failover behavior. Hostname targets require DNS resolution before probing; DNS failures cause the probe to fail.
+      examples:
+      - 8.8.8.8
+      - 1.1.1.1:5000
+      - example.com
+      maxLength: 253
+      minLength: 1
+    PartialDhcpIpv4Range:
+      type: object
+      description: Represents a range of IPv4 addresses (PATCH)
+      properties:
+        end:
+          $ref: '#/components/schemas/Ipv4String'
+          description: End of the range (inclusive)
+        start:
+          $ref: '#/components/schemas/Ipv4String'
+          description: Start of the range (inclusive)
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth2/token
+          scopes:
+            u-os-adm.firewall.readonly: Read access for firewall endpoints
+            u-os-adm.firewall.readwrite: Read and write access for firewall endpoints
+            u-os-adm.logging.readonly: Read access for logging endpoints
+            u-os-adm.network.readonly: Read access for network endpoints
+            u-os-adm.network.readwrite: Read and write access for network endpoints
+            u-os-adm.realtime.readonly: Read access for realtime endpoints
+            u-os-adm.realtime.readwrite: Read and write access for realtime endpoints
+            u-os-adm.recovery.readwrite: Read and write access for recovery endpoints
+            u-os-adm.security.readonly: Read access for security endpoints
+            u-os-adm.security.readwrite: Read and write access for security endpoints
+            u-os-adm.serial-interfaces.readonly: Read access for serial interface configuration endpoints
+            u-os-adm.serial-interfaces.readwrite: Read and write access for serial interface configuration endpoints
+            u-os-adm.syslog.readonly: Read access for syslog endpoints
+            u-os-adm.syslog.readwrite: Read and write access for syslog endpoints
+            u-os-adm.system.readonly: Read access for system endpoints
+            u-os-adm.system.readwrite: Read and write access for system endpoints
+            u-os-adm.time.readonly: Read access for time settings endpoints
+            u-os-adm.time.readwrite: Read and write access for time settings endpoints
+            u-os-adm.update.readonly: Read access for update endpoints
+            u-os-adm.update.readwrite: Read and write access for update endpoints
+      description: The HTTP API uses the OAuth2 client credentials flow.
+x-refined-from:
+- administration-openapi.yaml
+- weidmueller-administration-openapi.yml

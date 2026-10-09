@@ -1,0 +1,28 @@
+generated: '2026-10-09'
+method: searched
+source: https://crates.io/api/v1/crates/u-os-hub-client
+name: Weidmüller u-OS Packages
+packages:
+- name: u-os-hub-client
+  registry: crates.io
+  url: https://crates.io/crates/u-os-hub-client
+  language: Rust
+  official: true
+  version: 0.3.0
+  published: '2026-05-20'
+  repository: https://github.com/weidmueller/u-os-hub-client-rs
+  wraps: Variable-NATS-API (u-OS Data Hub)
+  note: Rust client for the u-OS Variable-NATS-API, recommended by the variable-nats-api README in weidmueller/u-os-hub-api.
+    crates.io lists 7 versions (0.2.0 on 2025-10-09 through 0.3.0 on 2026-05-20). The README still shows `u-os-hub-client
+    = "0.2"`.
+- name: u-os-sdk-quickstart
+  registry: github
+  url: https://github.com/weidmueller/u-os-sdk-quickstart
+  language: C/C++
+  official: true
+  version: null
+  published: null
+  note: Example collection for the C/C++ SDK for u-OS devices, cloned with git and run in a dev container. It is not a
+    package on any registry, so there is no version metadata to read (last push 2026-06-16).
+client_generation: The openapi/README.adoc says to use OpenAPI Generator to generate a client library for the HTTP APIs.
+  No first-party HTTP client package is published.

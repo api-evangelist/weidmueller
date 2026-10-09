@@ -1,0 +1,494 @@
+generated: '2026-10-09'
+method: derived
+status: candidate
+source: Derived from openapi/weidmueller-administration-openapi.yml and openapi/weidmueller-variable-http-openapi.yml (weidmueller/u-os-hub-api).
+  No official Weidmüller MCP server found.
+evidence:
+  search: 'Web search "Weidmüller u-OS MCP server Model Context Protocol" (2026-10-09): no Weidmüller/u-OS MCP server found.'
+  github: 'https://github.com/weidmueller repos listed via GitHub API 2026-10-09: no MCP server repository.'
+  probes:
+  - url: https://www.weidmueller.com/mcp
+    status: 403
+    note: control path also 403 (edge blocks before routing); proves nothing (preflight opaque)
+deployment:
+  mode: none
+  auth: unknown
+  verified: derived
+  note: No server is shipped. The underlying APIs run on the customer u-OS device (relative base paths /u-os-adm/api/v1 and
+    /u-os-hub/api/v1) with OAuth2 client credentials (token URL /oauth2/token on the device); any MCP server would have to
+    run with network access to that device.
+server:
+  name: weidmueller-u-os
+  transport: null
+tools_count: 50
+tools:
+- name: get_firewall_active_config
+  description: Get the currently active firewall configuration.
+  operationId: get_firewall_active_config
+  method: GET
+  path: /firewall/active-config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.firewall.readonly
+  - u-os-adm.firewall.readwrite
+  read_only: true
+- name: set_firewall_active_config
+  description: Set a temporary override on the active firewall configuration.
+  operationId: set_firewall_active_config
+  method: PUT
+  path: /firewall/active-config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.firewall.readwrite
+  read_only: false
+- name: update_firewall_active_config
+  description: Modify the active firewall configuration with a temporary override.
+  operationId: update_firewall_active_config
+  method: PATCH
+  path: /firewall/active-config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.firewall.readwrite
+  read_only: false
+- name: get_firewall_config
+  description: Get the persistent firewall configuration.
+  operationId: get_firewall_config
+  method: GET
+  path: /firewall/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.firewall.readonly
+  - u-os-adm.firewall.readwrite
+  read_only: true
+- name: set_firewall_config
+  description: Set the persistent firewall configuration.
+  operationId: set_firewall_config
+  method: PUT
+  path: /firewall/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.firewall.readwrite
+  read_only: false
+- name: update_firewall_config
+  description: Modify the persistent firewall configuration.
+  operationId: update_firewall_config
+  method: PATCH
+  path: /firewall/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.firewall.readwrite
+  read_only: false
+- name: reload_firewall_config
+  description: Reloads the firewall configuration, which deletes the temporary config and rolls back to the persistent config.
+  operationId: reload_firewall_config
+  method: POST
+  path: /firewall:reload
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.firewall.readwrite
+  read_only: false
+- name: get_logging_entries
+  description: Get all log entries.
+  operationId: get_logging_entries
+  method: GET
+  path: /logging/entries
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.logging.readonly
+  read_only: true
+- name: create_logging_report
+  description: Trigger the generation of a report.
+  operationId: create_logging_report
+  method: POST
+  path: /logging/reports
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.logging.readonly
+  read_only: false
+- name: get_logging_report
+  description: Get the report by the given report_id.
+  operationId: get_logging_report
+  method: GET
+  path: /logging/reports/{report_id}
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.logging.readonly
+  read_only: true
+- name: get_logging_sources
+  description: Get available log sources.
+  operationId: get_logging_sources
+  method: GET
+  path: /logging/sources
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.logging.readonly
+  read_only: true
+- name: get_network_config
+  description: Get the current network configuration of the device.
+  operationId: get_network_config
+  method: GET
+  path: /network/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.network.readonly
+  - u-os-adm.network.readwrite
+  read_only: true
+- name: set_network_config
+  description: Set the full network configuration of the device.
+  operationId: set_network_config
+  method: PUT
+  path: /network/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.network.readwrite
+  read_only: false
+- name: update_network_config
+  description: Modify the network configuration of the device.
+  operationId: update_network_config
+  method: PATCH
+  path: /network/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.network.readwrite
+  read_only: false
+- name: get_network_state
+  description: Get the current network state of the device.
+  operationId: get_network_state
+  method: GET
+  path: /network/state
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.network.readonly
+  - u-os-adm.network.readwrite
+  read_only: true
+- name: network_factory_reset
+  description: Triggers a network settings factory reset.
+  operationId: network_factory_reset
+  method: POST
+  path: /network:factory-reset
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.network.readwrite
+  read_only: false
+- name: get_operation
+  description: Get the status of a long running operation by its ID.
+  operationId: get_operation
+  method: GET
+  path: /operations/{operation_id}
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes: []
+  read_only: true
+- name: ping
+  description: Minimal endpoint to verify the backend is started and reachable.
+  operationId: ping
+  method: GET
+  path: /ping
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes: []
+  read_only: true
+- name: get_realtime_config
+  description: Get the realtime configuration for the system.
+  operationId: get_realtime_config
+  method: GET
+  path: /realtime/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.realtime.readonly
+  - u-os-adm.realtime.readwrite
+  read_only: true
+- name: set_realtime_config
+  description: Set the realtime configuration for the system.
+  operationId: set_realtime_config
+  method: PUT
+  path: /realtime/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.realtime.readwrite
+  read_only: false
+- name: get_realtime_state
+  description: Get the current realtime state.
+  operationId: get_realtime_state
+  method: GET
+  path: /realtime/state
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.realtime.readonly
+  - u-os-adm.realtime.readwrite
+  read_only: true
+- name: recovery_factory_reset
+  description: Triggers a factory reset.
+  operationId: recovery_factory_reset
+  method: POST
+  path: /recovery:factory-reset
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.recovery.readwrite
+  read_only: false
+- name: get_security_settings
+  description: Get the security configuration for the system.
+  operationId: get_security_settings
+  method: GET
+  path: /security/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.security.readonly
+  - u-os-adm.security.readwrite
+  read_only: true
+- name: set_security_settings
+  description: Set the security configuration for the system.
+  operationId: set_security_settings
+  method: PUT
+  path: /security/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.security.readwrite
+  read_only: false
+- name: get_serial_interface_config
+  description: Read the serial interface configuration for the system.
+  operationId: get_serial_interface_config
+  method: GET
+  path: /serial-interfaces/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.serial-interfaces.readonly
+  - u-os-adm.serial-interfaces.readwrite
+  read_only: true
+- name: set_serial_interface_config
+  description: Set the serial interface configuration for the system.
+  operationId: set_serial_interface_config
+  method: PUT
+  path: /serial-interfaces/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.serial-interfaces.readwrite
+  read_only: false
+- name: update_serial_interface_config
+  description: Update the serial interface configuration for the system.
+  operationId: update_serial_interface_config
+  method: PATCH
+  path: /serial-interfaces/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.serial-interfaces.readwrite
+  read_only: false
+- name: get_serial_interface_state
+  description: Get the current state of the serial interfaces on the system.
+  operationId: get_serial_interface_state
+  method: GET
+  path: /serial-interfaces/state
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.serial-interfaces.readonly
+  - u-os-adm.serial-interfaces.readwrite
+  read_only: true
+- name: get_certificates
+  description: Get all uploaded certificates.
+  operationId: get_certificates
+  method: GET
+  path: /syslog/certificates
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.syslog.readonly
+  - u-os-adm.syslog.readwrite
+  read_only: true
+- name: set_certificates
+  description: Set all certificates
+  operationId: set_certificates
+  method: PUT
+  path: /syslog/certificates
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.syslog.readwrite
+  read_only: false
+- name: patch_certificates
+  description: Partially update certificates
+  operationId: patch_certificates
+  method: PATCH
+  path: /syslog/certificates
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.syslog.readwrite
+  read_only: false
+- name: get_config
+  description: Get syslog forwarding configuration.
+  operationId: get_config
+  method: GET
+  path: /syslog/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.syslog.readonly
+  - u-os-adm.syslog.readwrite
+  read_only: true
+- name: set_config
+  description: Set syslog forwarding configuration.
+  operationId: set_config
+  method: PUT
+  path: /syslog/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.syslog.readwrite
+  read_only: false
+- name: get_state
+  description: Get syslog forwarding service state.
+  operationId: get_state
+  method: GET
+  path: /syslog/state
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.syslog.readonly
+  - u-os-adm.syslog.readwrite
+  read_only: true
+- name: get_system_disks
+  description: This endpoint returns disk information
+  operationId: get_system_disks
+  method: GET
+  path: /system/disks
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.system.readonly
+  - u-os-adm.system.readwrite
+  read_only: true
+- name: get_system_info
+  description: This endpoint returns static system information (such as cpu architecture, firmware info, ...)
+  operationId: get_system_info
+  method: GET
+  path: /system/info
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.system.readonly
+  - u-os-adm.system.readwrite
+  read_only: true
+- name: get_system_nameplate
+  description: Returns the digital nameplate information of the device.
+  operationId: get_system_nameplate
+  method: GET
+  path: /system/nameplate
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.system.readonly
+  - u-os-adm.system.readwrite
+  read_only: true
+- name: system_reboot
+  description: Triggers a system reboot.
+  operationId: system_reboot
+  method: POST
+  path: /system:reboot
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.system.readwrite
+  read_only: false
+- name: get_time_config
+  description: Get time configuration.
+  operationId: get_time_config
+  method: GET
+  path: /time/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.time.readonly
+  - u-os-adm.time.readwrite
+  read_only: true
+- name: set_time_config
+  description: Replace time configuration.
+  operationId: set_time_config
+  method: PUT
+  path: /time/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.time.readwrite
+  read_only: false
+- name: get_time_state
+  description: Get current time state.
+  operationId: get_time_state
+  method: GET
+  path: /time/state
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.time.readonly
+  - u-os-adm.time.readwrite
+  read_only: true
+- name: list_timezones
+  description: List available timezones.
+  operationId: list_timezones
+  method: GET
+  path: /time/timezones
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.time.readonly
+  - u-os-adm.time.readwrite
+  read_only: true
+- name: get_update_settings
+  description: Get the update configuration for the system.
+  operationId: get_update_settings
+  method: GET
+  path: /update/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.update.readonly
+  - u-os-adm.update.readwrite
+  read_only: true
+- name: set_update_settings
+  description: Set the update configuration for the system.
+  operationId: set_update_settings
+  method: PUT
+  path: /update/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.update.readwrite
+  read_only: false
+- name: update_update_settings
+  description: Modify the update configuration of the device.
+  operationId: update_update_settings
+  method: PATCH
+  path: /update/config
+  api: openapi/weidmueller-administration-openapi.yml
+  scopes:
+  - u-os-adm.update.readwrite
+  read_only: false
+- name: get_providers_handler
+  description: List providers.
+  operationId: get_providers_handler
+  method: GET
+  path: /providers
+  api: openapi/weidmueller-variable-http-openapi.yml
+  scopes:
+  - hub.variables.readonly
+  - hub.variables.readwrite
+  read_only: true
+- name: get_variables_handler
+  description: List variable values of a single provider.
+  operationId: get_variables_handler
+  method: GET
+  path: /providers/{provider_id}/variables
+  api: openapi/weidmueller-variable-http-openapi.yml
+  scopes:
+  - hub.variables.readonly
+  - hub.variables.readwrite
+  read_only: true
+- name: post_multiple_variables_handler
+  description: Update variable values of a single provider.
+  operationId: post_multiple_variables_handler
+  method: POST
+  path: /providers/{provider_id}/variables
+  api: openapi/weidmueller-variable-http-openapi.yml
+  scopes:
+  - hub.variables.readwrite
+  read_only: false
+- name: get_single_variable_handler
+  description: Get variable value of a single provider.
+  operationId: get_single_variable_handler
+  method: GET
+  path: /providers/{provider_id}/variables/{variable_key}
+  api: openapi/weidmueller-variable-http-openapi.yml
+  scopes:
+  - hub.variables.readonly
+  - hub.variables.readwrite
+  read_only: true
+- name: post_single_variable_handler
+  description: Update variable value of a single provider.
+  operationId: post_single_variable_handler
+  method: POST
+  path: /providers/{provider_id}/variables/{variable_key}
+  api: openapi/weidmueller-variable-http-openapi.yml
+  scopes:
+  - hub.variables.readwrite
+  read_only: false

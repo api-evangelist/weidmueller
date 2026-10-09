@@ -1,0 +1,76 @@
+generated: '2026-10-09'
+method: searched
+source: https://www.weidmueller.com/int/other/privacy_statement.jsp
+signals:
+  data_subject_request:
+    url: https://www.weidmueller.com/int/other/privacy_statement.jsp
+    section: '14. Rights of individuals affected'
+    channel: datenschutz@weidmueller.de
+    stated_sla: 'Deletion of your personal data usually takes place within two working days of exercising this right as an individual affected.'
+    evidence:
+    - source: https://www.weidmueller.com/int/other/privacy_statement.jsp
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'You have the right to demand information from us at any time about what data we have stored about you, its origin, and the recipients or categories of recipients to whom this data is passed on and the purpose of storage'
+    - source: https://www.weidmueller.com/int/other/privacy_statement.jsp
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'You have the right to block and delete your personal data stored by us. Deletion of your personal data usually takes place within two working days of exercising this right as an individual affected.'
+    - source: https://www.weidmueller.com/int/other/privacy_statement.jsp
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'Should you demand the return of personal data provided to us, we will issue or transmit the data to you or to another responsible person if you wish, in a structured, common and machine-readable format.'
+    note: >-
+      The GDPR privacy statement enumerates access, revocation, rectification, deletion/blocking, data
+      transmission (portability) and objection rights, names an e-mail and postal channel (Weidmüller
+      Interface GmbH & Co. KG, Detmold) and a data protection officer, and states a typical two-working-day
+      deletion turnaround. This is a website/customer-account privacy statement, not an API-specific DPA.
+  data_retention:
+    url: https://www.weidmueller.com/int/other/privacy_statement.jsp
+    section: '5.4 Storage period'
+    evidence:
+    - source: https://www.weidmueller.com/int/other/privacy_statement.jsp
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'Your personal data will generally be deleted as soon as the respective purpose of the processing has been fulfilled or no longer applies'
+    - source: https://www.weidmueller.com/int/other/privacy_statement.jsp
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'If a contract is not concluded, we will delete your data after 3 years at the end of the statutory limitation period.'
+    note: >-
+      Purpose-bound deletion with stated periods: contract data kept for the contract term plus 6 or 10
+      years (German commercial/fiscal retention law), non-contract data deleted after 3 years.
+  data_residency:
+    url: https://www.weidmueller.com/int/other/privacy_statement.jsp
+    evidence:
+    - source: https://www.weidmueller.com/int/other/privacy_statement.jsp
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'In this context, personal data may be transferred to countries outside the EU/EEA, in particular to the USA.'
+    - source: https://www.weidmueller.com/int/other/privacy_statement.jsp
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'In order to be able to ensure adequate protection of your personal data in the event of the transfer of personal data to such so-called third countries, we have concluded so-called EU-US standard contractual clauses with the service provider.'
+    note: >-
+      Not a residency commitment: the statement discloses that service providers may move personal data
+      outside the EU/EEA (notably the USA) under EU standard contractual clauses, and section 17 allows
+      transfer to other Weidmüller Group companies. No region-pinning option is offered.
+  ai_transparency:
+    url: https://www.weidmueller.com/int/other/privacy_statement.jsp
+    section: '16. Automated decision making/profiling'
+    stance: denies
+    evidence:
+    - source: https://www.weidmueller.com/int/other/privacy_statement.jsp
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'We do not use automated decision-making or profiling (an automated analysis of your personal circumstances).'
+    note: >-
+      A denial, recorded as such: Weidmüller states it does not use automated decision-making or profiling.
+      This is a GDPR Art. 22 disclosure, not an AI-system transparency statement; no AI disclosure page was found.
+probed_absent:
+- signal: subprocessors
+  urls:
+  - {url: 'https://www.weidmueller.com/int/other/privacy_statement.jsp', status: 200}
+  note: >-
+    The privacy statement describes processors generically ("All processors have been carefully selected")
+    and names some services in context (e.g. Microsoft, SAP CRM), but publishes no dated subprocessor list.

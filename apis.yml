@@ -1,23 +1,459 @@
 aid: weidmueller
+
 name: Weidmüller
-description: 'Weidmüller is a company surfaced via the API Evangelist harvest backlog (source: spectral-ruleset-github)
-  and added to the network as a stub for full-pipeline profiling.'
+
+description: 'Weidmüller (Weidmueller Interface GmbH & Co. KG, headquartered in Detmold, Germany) is a provider of smart industrial connectivity
+  and automation: terminal blocks, PCB connectors, electronics, I/O systems, controls and industrial Ethernet. Its u-OS edge operating system
+  for automation devices (UC20 controllers) exposes a Data Hub with documented Variable-HTTP and Variable-NATS APIs, whose OpenAPI and AsyncAPI
+  specifications are published in the weidmueller GitHub organization.'
+
 url: https://raw.githubusercontent.com/api-evangelist/weidmueller/refs/heads/main/apis.yml
+
 x-type: company
+
 x-source: harvest:spectral-ruleset-github
-x-tier: stub
-x-tier-reason: harvest
+
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-09 (modular-v1; was harvest)
+
 specificationVersion: '0.20'
+
 created: '2026-10-09'
+
 modified: '2026-10-09'
+
 tags:
 - Company
-apis: []
+- Industrial Automation
+- Industrial Connectivity
+- Edge Computing
+- IIoT
+- u-OS
+- Manufacturing
+
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+
+image: https://avatars.githubusercontent.com/u/45368059?v=4
+
 common:
+- type: AgenticAccess
+  url: agentic-access/weidmueller-agentic-access.yml
+- type: Spectral
+  url: rules/weidmueller-u-os-hub-api-spectral-rules.yml
+- type: Spectral
+  url: rules/weidmueller-rules.yml
+- type: JSONLD
+  url: json-ld/weidmueller-context.jsonld
+- type: Vocabulary
+  url: vocabulary/weidmueller-vocabulary.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DataModel
+  url: data-model/weidmueller-data-model.yml
+- type: ChangeLog
+  url: changelog/weidmueller-changelog.yml
+- type: Conventions
+  url: conventions/weidmueller-conventions.yml
+- type: Deprecation
+  url: lifecycle/weidmueller-lifecycle.yml
+- type: Lifecycle
+  url: lifecycle/weidmueller-lifecycle.yml
+- type: ErrorCatalog
+  url: errors/weidmueller-problem-types.yml
+- type: Conformance
+  url: conformance/weidmueller-conformance.yml
+- type: Overlay
+  url: overlays/weidmueller-administration-overlay.yaml
+- type: Hosts
+  url: hosts/weidmueller-hosts.yml
+- type: Vendors
+  url: vendors/weidmueller-vendors.yml
+- type: SDKs
+  url: packages/weidmueller-packages.yml
+- type: Packages
+  url: packages/weidmueller-packages.yml
+- type: OAuthScopes
+  url: scopes/weidmueller-scopes.yml
+- type: Authentication
+  url: authentication/weidmueller-authentication.yml
+- type: DomainSecurity
+  url: security/weidmueller-domain-security.yml
 - type: Website
   url: https://www.weidmueller.com/
+- type: SpectralRules
+  url: https://github.com/weidmueller/u-os-hub-api/blob/8bde3db7245954ea6ee1a638d6bd3c939b292efc/tools/spectral/asyncapi-rules.json
+- type: Documentation
+  url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/index.html
+- type: APIReference
+  url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+- type: Support
+  url: https://support.weidmueller.com/support-center/
+- type: GitHubOrganization
+  url: https://github.com/weidmueller
+- type: Blog
+  url: https://www.weidmueller.com/int/company/press/company_news/index.jsp
+- type: PrivacyPolicy
+  url: https://www.weidmueller.com/int/other/privacy_statement.jsp
+
+apis:
+- aid: weidmueller:u-os-data-hub-variable-nats-api
+  name: Weidmüller u-OS Data Hub Variable-NATS API
+  description: >-
+    A fast asynchronous, event-based NATS API for providing and consuming variables within the u-OS Data
+    Hub; not accessible to clients outside the device (AsyncAPI 2.6.0, 10 channels, NATS server at 127.0.0.1:49360
+    on the device).
+  humanURL: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  tags:
+  - Data Hub
+  - NATS
+  - Event-Driven
+  - u-OS
+  properties:
+  - type: AsyncAPI
+    url: asyncapi/weidmueller-variable-nats-asyncapi.yml
+  - type: AsyncAPI
+    name: AsyncAPI (provider-hosted)
+    url: >-
+      https://raw.githubusercontent.com/weidmueller/u-os-hub-api/main/variable-nats-api/variable-nats-asyncapi.yaml
+- aid: weidmueller:weidmueller-consumer-api
+  name: Weidmüller Consumer API
+  description: >-
+    A consumer may
+
+      - list/get available providers
+      - list/get/update variables published by providers.
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - Consumer
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-consumer-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-firewall-api
+  name: Weidmüller Firewall API
+  description: API for firewall settings of u-OS
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - firewall
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-firewall-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-logging-api
+  name: Weidmüller Logging API
+  description: Centralized system logging, capture and reporting API for u-OS
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - logging
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-logging-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-network-api
+  name: Weidmüller Network API
+  description: API for network settings and state of u-OS
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - network
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-network-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-operations-api
+  name: Weidmüller Operations API
+  description: API for u-OS long running operations
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - operations
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-operations-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-ping-api
+  name: Weidmüller Ping API
+  description: API for checking the availability of u-os-adm
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - ping
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-ping-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-realtime-api
+  name: Weidmüller Realtime API
+  description: API for u-OS realtime settings
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - realtime
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-realtime-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-recovery-api
+  name: Weidmüller Recovery API
+  description: API for recovery of u-OS
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - recovery
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-recovery-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-security-api
+  name: Weidmüller Security API
+  description: API for u-OS security settings
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - security
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-security-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-serial-interfaces-api
+  name: Weidmüller Serial Interfaces API
+  description: API for u-OS serial interface settings
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - serial-interfaces
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-serial-interfaces-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-syslog-api
+  name: Weidmüller Syslog API
+  description: API for syslog forwarding configuration
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - syslog
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-syslog-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-system-api
+  name: Weidmüller System API
+  description: API for general system informations & actions of u-OS
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - system
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-system-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-time-api
+  name: Weidmüller Time API
+  description: API for time settings and time state of u-OS
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - time
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-time-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-update-api
+  name: Weidmüller Update API
+  description: API for u-OS update settings
+  humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
+  tags:
+  - update
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-update-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+- aid: weidmueller:weidmueller-open-api-api
+  name: Weidmüller Open API
+  description: API for reading the OpenAPI specification
+  humanURL: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  tags:
+  - Open API
+  properties:
+  - type: OpenAPI
+    url: openapi/weidmueller-open-api-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/weidmueller-task-description-v1.schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-u-os-lum-recipe-v1.schema.json
+  - type: Documentation
+    url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-read-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-variable-update-post-payload-schema.json
+  - type: JSONSchema
+    url: json-schema/weidmueller-response-single-provider-schema.json
+x-enrichment:
+  date: '2026-10-09'
+  status: enriched
+  artifacts_added: 41
+  pass: modular-v1
+  engine: identity=anthropic,contract=anthropic,surfaces=anthropic,docs=anthropic,regulatory=anthropic
+x-coverage:
+  state: covered
+  reason: identity-verified
+  detail: 'Enriched 2026-10-09: website and identity verified (partial) from the provider''s own pages; probed URLs below.'
+  evidence:
+  - url: https://www.weidmueller.com/
+    status: 403
+  - url: https://github.com/weidmueller
+    status: 200
+  - url: https://support.weidmueller.com/support-center/
+    status: 200
+  - url: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
+    status: 200
