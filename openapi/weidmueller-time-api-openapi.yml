@@ -1,13 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Weidmueller Time API
-  version: 1.5.0-next
+  title: Administration Time API
+  description: HTTP API for administrating a u-OS device.
   contact:
     name: Weidmüller
   license:
     name: MIT
     identifier: MIT
-  description: 'Operations tagged time across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 1.5.0-next
 servers:
 - url: /u-os-adm/api/v1
 tags:
@@ -82,8 +82,6 @@ paths:
       security:
       - OAuth2:
         - u-os-adm.time.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
   /time/state:
     get:
       tags:
@@ -109,8 +107,6 @@ paths:
         - u-os-adm.time.readonly
       - OAuth2:
         - u-os-adm.time.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
   /time/timezones:
     get:
       tags:
@@ -136,8 +132,6 @@ paths:
         - u-os-adm.time.readonly
       - OAuth2:
         - u-os-adm.time.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
 components:
   schemas:
     NtpRuntimeState:
@@ -164,6 +158,53 @@ components:
         ntp_synchronized:
           type: boolean
           description: Whether the system clock is currently synchronized via NTP.
+    TimezoneItem:
+      type: object
+      description: A single timezone entry with base and currently active seasonal offsets.
+      required:
+      - name
+      - base_offset
+      - actual_offset
+      properties:
+        actual_offset:
+          type: integer
+          format: int32
+          description: 'Currently applicable UTC offset in minutes for this timezone.
+
+            This is the offset that is used now and can differ from `base_offset` due to seasonal timezone rules.'
+          example: 60
+        base_offset:
+          type: integer
+          format: int32
+          description: 'Standard UTC offset in minutes (without DST), e.g. `60` for UTC+01:00 or `-300` for UTC-05:00.
+
+            This is the fixed base offset defined by the timezone rules.
+
+            The currently used offset is returned in `actual_offset`.'
+          example: 60
+        name:
+          type: string
+          description: IANA timezone name, e.g. `"Europe/Berlin"`.
+          example: Europe/Berlin
+    TimeConfig:
+      type: object
+      description: Time configuration for `GET /time/config` and `PUT /time/config`.
+      required:
+      - timezone
+      - source
+      properties:
+        source:
+          $ref: '#/components/schemas/TimeConfigSource'
+        timezone:
+          type: string
+          description: 'IANA timezone name to apply to the system, e.g. `"Europe/Berlin"`.
+
+            DST transitions are handled automatically based on the IANA rules for the given timezone.
+
+            The full list of accepted values is available via `GET /time/timezones`.
+
+            This timezone controls local time representation (including DST) used by the system and API responses.'
+          example: Europe/Berlin
     NtpSettings:
       type: object
       description: NTP-specific settings used when `method` is `NTP`.
@@ -189,6 +230,44 @@ components:
           example:
           - pool.ntp.org
           - time.google.com
+    TimeStateResponse:
+      type: object
+      required:
+      - local_time
+      properties:
+        local_time:
+          type: string
+          format: date-time
+          description: Current local time in the configured timezone, RFC 3339 formatted with UTC offset.
+          example: 2026-01-15 12:00:00+02:00
+        ntp:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/NtpRuntimeState'
+            description: Runtime NTP status details (present only when NTP is configured).
+      example:
+        local_time: 2026-01-15 12:00:00+02:00
+        ntp:
+          current_server: time1.google.com
+          link_ntp_servers:
+          - time1.google.com
+          - time2.google.com
+          ntp_synchronized: true
+    TimeConfigSource:
+      oneOf:
+      - $ref: '#/components/schemas/NtpSettings'
+      - $ref: '#/components/schemas/ManualTimeSettings'
+      description: Discriminates between NTP and manual time synchronization methods.
+      examples:
+      - method: NTP
+        ntp_servers:
+        - pool.ntp.org
+        - time.google.com
+      discriminator:
+        propertyName: method
+        mapping:
+          MANUAL: '#/components/schemas/ManualTimeSettings'
+          NTP: '#/components/schemas/NtpSettings'
     ManualTimeSettings:
       type: object
       description: Manual time settings used when `method` is `MANUAL`.
@@ -248,48 +327,6 @@ components:
 
             The last part of the URI is always a `ErrorId`'
           example: /u-os-adm/api/v1/errors/set-security-settings
-    TimeConfig:
-      type: object
-      description: Time configuration for `GET /time/config` and `PUT /time/config`.
-      required:
-      - timezone
-      - source
-      properties:
-        source:
-          $ref: '#/components/schemas/TimeConfigSource'
-        timezone:
-          type: string
-          description: 'IANA timezone name to apply to the system, e.g. `"Europe/Berlin"`.
-
-            DST transitions are handled automatically based on the IANA rules for the given timezone.
-
-            The full list of accepted values is available via `GET /time/timezones`.
-
-            This timezone controls local time representation (including DST) used by the system and API responses.'
-          example: Europe/Berlin
-    TimeStateResponse:
-      type: object
-      required:
-      - local_time
-      properties:
-        local_time:
-          type: string
-          format: date-time
-          description: Current local time in the configured timezone, RFC 3339 formatted with UTC offset.
-          example: 2026-01-15 12:00:00+02:00
-        ntp:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/NtpRuntimeState'
-            description: Runtime NTP status details (present only when NTP is configured).
-      example:
-        local_time: 2026-01-15 12:00:00+02:00
-        ntp:
-          current_server: time1.google.com
-          link_ntp_servers:
-          - time1.google.com
-          - time2.google.com
-          ntp_synchronized: true
     ListTimezonesResponse:
       type: object
       required:
@@ -299,49 +336,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TimezoneItem'
-    TimezoneItem:
-      type: object
-      description: A single timezone entry with base and currently active seasonal offsets.
-      required:
-      - name
-      - base_offset
-      - actual_offset
-      properties:
-        actual_offset:
-          type: integer
-          format: int32
-          description: 'Currently applicable UTC offset in minutes for this timezone.
-
-            This is the offset that is used now and can differ from `base_offset` due to seasonal timezone rules.'
-          example: 60
-        base_offset:
-          type: integer
-          format: int32
-          description: 'Standard UTC offset in minutes (without DST), e.g. `60` for UTC+01:00 or `-300` for UTC-05:00.
-
-            This is the fixed base offset defined by the timezone rules.
-
-            The currently used offset is returned in `actual_offset`.'
-          example: 60
-        name:
-          type: string
-          description: IANA timezone name, e.g. `"Europe/Berlin"`.
-          example: Europe/Berlin
-    TimeConfigSource:
-      oneOf:
-      - $ref: '#/components/schemas/NtpSettings'
-      - $ref: '#/components/schemas/ManualTimeSettings'
-      description: Discriminates between NTP and manual time synchronization methods.
-      examples:
-      - method: NTP
-        ntp_servers:
-        - pool.ntp.org
-        - time.google.com
-      discriminator:
-        propertyName: method
-        mapping:
-          MANUAL: '#/components/schemas/ManualTimeSettings'
-          NTP: '#/components/schemas/NtpSettings'
   securitySchemes:
     OAuth2:
       type: oauth2
@@ -370,6 +364,3 @@ components:
             u-os-adm.update.readonly: Read access for update endpoints
             u-os-adm.update.readwrite: Read and write access for update endpoints
       description: The HTTP API uses the OAuth2 client credentials flow.
-x-refined-from:
-- administration-openapi.yaml
-- weidmueller-administration-openapi.yml

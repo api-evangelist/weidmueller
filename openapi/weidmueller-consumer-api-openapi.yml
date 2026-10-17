@@ -1,7 +1,10 @@
 openapi: 3.2.0
 info:
-  title: Weidmueller Consumer API
-  version: 1.3.0
+  title: Variable HTTP Consumer API
+  description: 'The u-OS Data Hub is a standardized way of communicating for system services and apps. This document describes the HTTP API for accessing variables as a consumer.
+
+
+    Each participant at the Data Hub is either a consumer, a provider or both. A *consumer* can list/get available providers and list/get/update variables published by providers. A *provider* publishes variables to the Data Hub.'
   contact:
     name: Weidmüller Interface GmbH & Co. KG
     url: https://www.weidmueller.com/
@@ -9,7 +12,7 @@ info:
   license:
     name: MIT
     url: https://spdx.org/licenses/MIT.html
-  description: 'Operations tagged Consumer across 2 of this provider''s published API definitions: variable-http-openapi.yaml, weidmueller-variable-http-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 1.3.0
 servers:
 - url: /u-os-hub/api/v1
   description: A synchronous HTTP API for accessing variables.
@@ -52,9 +55,6 @@ paths:
         - hub.variables.readonly
       - OAuth2:
         - hub.variables.readwrite
-    servers:
-    - url: /u-os-hub/api/v1
-      description: A synchronous HTTP API for accessing variables.
   /providers/{provider_id}/variables:
     get:
       tags:
@@ -175,9 +175,6 @@ paths:
       security:
       - OAuth2:
         - hub.variables.readwrite
-    servers:
-    - url: /u-os-hub/api/v1
-      description: A synchronous HTTP API for accessing variables.
   /providers/{provider_id}/variables/{variable_key}:
     get:
       tags:
@@ -288,9 +285,6 @@ paths:
       security:
       - OAuth2:
         - hub.variables.readwrite
-    servers:
-    - url: /u-os-hub/api/v1
-      description: A synchronous HTTP API for accessing variables.
 components:
   schemas:
     VariableDefinition:
@@ -305,6 +299,19 @@ components:
           $ref: '#/components/schemas/VariableDataType'
         experimental:
           type: boolean
+    VariableUpdatePostPayload:
+      type: object
+      description: The JSON payload of a POST request (to update a single variable) is deserialized into this struct.
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          format: ^[a-zA-Z_]([a-zA-Z0-9_]{0,62})?(\.[a-zA-Z_]([a-zA-Z0-9_]{0,62})?)*$
+          maxLength: 1023
+        value:
+          $ref: '#/components/schemas/VariableValue'
     ISO8601Duration:
       type: string
       format: ^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$
@@ -313,31 +320,31 @@ components:
 
         Example: ''PT5H9M39.400S'''
       maxLength: 82
-    VariableAccessType:
-      type: string
-      enum:
-      - READ_ONLY
-      - READ_WRITE
-    Prefixes:
+    VariableName:
       type: string
       format: ^[a-zA-Z_]([a-zA-Z0-9_]{0,62})?(\.[a-zA-Z_]([a-zA-Z0-9_]{0,62})?)*$
-      description: A comma-separated list of prefixes used for listing a subset of variables.
+      description: String that contains the key of a variable.
       maxLength: 1023
-    ResponseSingleProvider:
-      type: object
-      description: Response containing a single provider.
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          format: ^[a-z]([a-z0-9_]{0,61}[a-z0-9])?$
-          maxLength: 63
     ProviderName:
       type: string
       format: ^[a-z]([a-z0-9_]{0,61}[a-z0-9])?$
       description: The id of a provider.
       maxLength: 63
+    VariableValue:
+      oneOf:
+      - type: integer
+        format: int64
+      - type: boolean
+      - $ref: '#/components/schemas/FormatlessString'
+      - type: number
+        format: double
+      - $ref: '#/components/schemas/ISO8601Duration'
+      - $ref: '#/components/schemas/ISO8601Timestamp'
+    VariableAccessType:
+      type: string
+      enum:
+      - READ_ONLY
+      - READ_WRITE
     ResponseSingleRead:
       type: object
       description: Response object for a single variable.
@@ -359,24 +366,29 @@ components:
           $ref: '#/components/schemas/ISO8601Timestamp'
         value:
           $ref: '#/components/schemas/VariableValue'
-    VariableValue:
-      oneOf:
-      - type: integer
-        format: int64
-      - type: boolean
-      - $ref: '#/components/schemas/FormatlessString'
-      - type: number
-        format: double
-      - $ref: '#/components/schemas/ISO8601Duration'
-      - $ref: '#/components/schemas/ISO8601Timestamp'
-    ISO8601Timestamp:
+    Prefixes:
       type: string
-      format: date-time
-      description: 'A timestamp string according to ISO8601 norm (https://datatracker.ietf.org/doc/html/rfc3339#section-5.6).
-
-
-        Example: ''1970-01-01T00:20:34.000Z'''
-      maxLength: 24
+      format: ^[a-zA-Z_]([a-zA-Z0-9_]{0,62})?(\.[a-zA-Z_]([a-zA-Z0-9_]{0,62})?)*$
+      description: A comma-separated list of prefixes used for listing a subset of variables.
+      maxLength: 1023
+    ResponseSingleProvider:
+      type: object
+      description: Response containing a single provider.
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: ^[a-z]([a-z0-9_]{0,61}[a-z0-9])?$
+          maxLength: 63
+    VariableQuality:
+      type: string
+      enum:
+      - BAD
+      - GOOD
+      - UNCERTAIN
+      - UNCERTAIN_LAST_USABLE_VALUE
+      - UNCERTAIN_INITIAL_VALUE
     FormatlessString:
       type: string
       format: string
@@ -391,32 +403,14 @@ components:
       - INT64
       - STRING
       - TIMESTAMP
-    VariableName:
+    ISO8601Timestamp:
       type: string
-      format: ^[a-zA-Z_]([a-zA-Z0-9_]{0,62})?(\.[a-zA-Z_]([a-zA-Z0-9_]{0,62})?)*$
-      description: String that contains the key of a variable.
-      maxLength: 1023
-    VariableUpdatePostPayload:
-      type: object
-      description: The JSON payload of a POST request (to update a single variable) is deserialized into this struct.
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          format: ^[a-zA-Z_]([a-zA-Z0-9_]{0,62})?(\.[a-zA-Z_]([a-zA-Z0-9_]{0,62})?)*$
-          maxLength: 1023
-        value:
-          $ref: '#/components/schemas/VariableValue'
-    VariableQuality:
-      type: string
-      enum:
-      - BAD
-      - GOOD
-      - UNCERTAIN
-      - UNCERTAIN_LAST_USABLE_VALUE
-      - UNCERTAIN_INITIAL_VALUE
+      format: date-time
+      description: 'A timestamp string according to ISO8601 norm (https://datatracker.ietf.org/doc/html/rfc3339#section-5.6).
+
+
+        Example: ''1970-01-01T00:20:34.000Z'''
+      maxLength: 24
   securitySchemes:
     OAuth2:
       type: oauth2
@@ -427,6 +421,3 @@ components:
             hub.variables.readonly: Read-only access to Data Hub variables.
             hub.variables.readwrite: Read and write access to Data Hub variables.
       description: The HTTP API uses the OAuth2 client credentials flow.
-x-refined-from:
-- variable-http-openapi.yaml
-- weidmueller-variable-http-openapi.yml

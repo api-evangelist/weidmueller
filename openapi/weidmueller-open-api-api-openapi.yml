@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   title: Weidmueller OpenAPI API
   version: '1.0'
-  description: 'Operations tagged openapi across 4 of this provider''s published API definitions: administration-openapi.yaml, variable-http-openapi.yaml, weidmueller-administration-openapi.yml, weidmueller-variable-http-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged openapi across 2 of this provider''s published API definitions: administration-openapi.yaml, variable-http-openapi.yaml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: /u-os-adm/api/v1
 - url: /u-os-hub/api/v1
@@ -114,5 +114,3 @@ components:
 x-refined-from:
 - administration-openapi.yaml
 - variable-http-openapi.yaml
-- weidmueller-administration-openapi.yml
-- weidmueller-variable-http-openapi.yml

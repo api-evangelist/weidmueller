@@ -1,13 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Weidmueller Operations API
-  version: 1.5.0-next
+  title: Administration Operations API
+  description: HTTP API for administrating a u-OS device.
   contact:
     name: Weidmüller
   license:
     name: MIT
     identifier: MIT
-  description: 'Operations tagged operations across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 1.5.0-next
 servers:
 - url: /u-os-adm/api/v1
 tags:
@@ -49,8 +49,6 @@ paths:
                 $ref: '#/components/schemas/HttpErrorPayload'
       security:
       - OAuth2: []
-    servers:
-    - url: /u-os-adm/api/v1
 components:
   schemas:
     OperationState:
@@ -194,6 +192,3 @@ components:
             u-os-adm.update.readonly: Read access for update endpoints
             u-os-adm.update.readwrite: Read and write access for update endpoints
       description: The HTTP API uses the OAuth2 client credentials flow.
-x-refined-from:
-- administration-openapi.yaml
-- weidmueller-administration-openapi.yml

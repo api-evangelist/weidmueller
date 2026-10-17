@@ -1,13 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Weidmueller Network API
-  version: 1.5.0-next
+  title: Administration Network API
+  description: HTTP API for administrating a u-OS device.
   contact:
     name: Weidmüller
   license:
     name: MIT
     identifier: MIT
-  description: 'Operations tagged network across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 1.5.0-next
 servers:
 - url: /u-os-adm/api/v1
 tags:
@@ -111,8 +111,6 @@ paths:
       security:
       - OAuth2:
         - u-os-adm.network.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
   /network/state:
     get:
       tags:
@@ -138,8 +136,6 @@ paths:
         - u-os-adm.network.readonly
       - OAuth2:
         - u-os-adm.network.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
   /network:factory-reset:
     post:
       tags:
@@ -166,64 +162,81 @@ paths:
       security:
       - OAuth2:
         - u-os-adm.network.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
 components:
   schemas:
-    InterfaceType:
-      type: string
-      description: The type of network interface.
-      enum:
-      - ETHERNET
-      - USB
-    InterfaceProbeState:
-      type: string
-      description: 'The current failover probe state of a monitored interface.
-
-
-        - `HEALTHY`: Enabled and passing probes.
-
-        - `PROBING`: Transitional state on the path to failure or recovery.
-
-        - `FAILED`: Penalised — using an elevated metric because probes are failing.'
-      enum:
-      - HEALTHY
-      - PROBING
-      - FAILED
-    FailoverInterfaceConfig:
+    Ipv4Route:
       type: object
-      description: 'Failover configuration for a single monitored interface.
-
-
-        When enabled, the probe loop checks connectivity on this interface. If
-
-        `failure_threshold` consecutive probes fail the interface is penalised by
-
-        settings its active metric to `failed_metric`. Once `success_threshold`
-
-        consecutive probes succeed the metric is restored to the interface''s
-
-        configured `metric` value.'
+      description: An IP route entry in the IPv4 routing table.
       required:
-      - enabled
-      - probe_target
-      - failed_metric
+      - destination
+      - gateway
+      - interface
+      - metric
       properties:
-        enabled:
-          type: boolean
-          description: Whether failover probing is enabled for this interface.
-        failed_metric:
+        destination:
+          $ref: '#/components/schemas/Ipv4Subnet'
+        gateway:
+          $ref: '#/components/schemas/Ipv4String'
+        interface:
+          type: string
+          example: eth-x4
+        metric:
           type: integer
           format: int32
-          description: 'Network interface metric (priority) that is applied when the interface has failed probing.
-
-            Should be higher than all normal interface metrics to ensure traffic is routed through healthy interfaces.'
-          example: 20000
-          maximum: 2147483647
+          example: 103
+          minimum: 0
+    PartialFailoverGlobalConfig:
+      type: object
+      description: "Global failover configuration.\n\n Controls the probe loop that monitors all configured interfaces and adjusts\n their route metrics based on connectivity probe results. (PATCH)"
+      properties:
+        failure_threshold:
+          type: integer
+          format: int32
+          description: Number of consecutive failed probes before an interface is considered failed and penalised.
+          example: 3
           minimum: 1
-        probe_target:
-          $ref: '#/components/schemas/ProbeTarget'
-          description: Probe target for connectivity checks (IPv4 address or hostname, optionally with port e.g. "1.1.1.1:5000").
+        probe_interval_seconds:
+          type: integer
+          format: int64
+          description: Interval between failover probes in seconds.
+          example: 10
+          minimum: 1
+        success_threshold:
+          type: integer
+          format: int32
+          description: Number of consecutive successful probes before an interface is considered healthy and unpenalised.
+          example: 3
+          minimum: 1
+    GlobalDnsServers:
+      type: object
+      description: 'Represents the global DNS servers used by the system.
+
+
+        The order of the servers represents their priority, with the first one being the primary DNS server unless an interface overrides it.'
+      required:
+      - servers
+      - searches
+      properties:
+        searches:
+          type: array
+          items:
+            type: string
+          example:
+          - .
+        servers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4String'
+    PartialDhcpIpv4Range:
+      type: object
+      description: Represents a range of IPv4 addresses (PATCH)
+      properties:
+        end:
+          $ref: '#/components/schemas/Ipv4String'
+          description: End of the range (inclusive)
+        start:
+          $ref: '#/components/schemas/Ipv4String'
+          description: Start of the range (inclusive)
     PartialInterfaceConfig:
       type: object
       description: Represents the configuration of a single network interface. (PATCH)
@@ -232,63 +245,44 @@ components:
           type: boolean
         ipv4_config:
           $ref: '#/components/schemas/PartialIpv4Config'
-    InterfaceConfig:
+    NetworkState:
       type: object
-      description: Represents the configuration of a single network interface.
+      description: 'The current network state on the device.
+
+
+        Note that this may differ from the configuration, e.g. a DHCP interface has an address in the state, but not in the configuration.'
       required:
-      - ipv4_config
+      - dns_resolver
+      - routes
+      - interfaces
       properties:
-        enabled:
-          type: boolean
-        ipv4_config:
-          $ref: '#/components/schemas/Ipv4Config'
-    Ipv4State:
-      type: object
-      description: Represents the IPv4 state of a network interface.
-      required:
-      - activated
-      properties:
-        activated:
-          type: boolean
-          description: Activated is true when the connection is active and a cable is plugged in. Otherwise false.
-        addresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ipv4Subnet'
-    PartialNetworkConfig:
-      type: object
-      description: Used for writing the network configuration. All fields are required to be present, but can be empty in some cases. (PATCH)
-      properties:
-        failover:
-          $ref: '#/components/schemas/PartialFailoverGlobalConfig'
-          description: Global failover probe settings.
-        hostname:
-          type: string
-          format: hostname
-          example: wm-uc20-m3000
-          maxLength: 63
-          minLength: 1
+        dns_resolver:
+          $ref: '#/components/schemas/GlobalDnsServers'
         interfaces:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/PartialInterfaceConfig'
+            $ref: '#/components/schemas/InterfaceState'
           propertyNames:
             type: string
           example:
             eth-x4:
-              ipv4_config:
-                dhcp: false
-                gateway: null
-                shared_mode:
-                  enabled: true
+              ipv4:
+                activated: true
+                addresses:
+                - ip: 192.168.1.100
+                  prefix_length: 24
+              type: ETHERNET
             eth-x5:
-              enabled: true
-              ipv4_config:
-                dhcp: true
-        service_interface:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/PartialServiceInterfaceConfig'
+              ipv4:
+                activated: true
+                addresses:
+                - ip: 192.168.1.101
+                  prefix_length: 24
+              type: ETHERNET
+        routes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4Route'
     SharedModeConfig:
       type: object
       description: Configuration options for interface sharing
@@ -336,6 +330,56 @@ components:
             If enabled, all other properties of the interface are ignored, except for the first IP address in the addresses list,
 
             which is used as the server address for the DHCP server.'
+    HttpErrorPayload:
+      type: object
+      description: 'Common error payload structure for HTTP responses.
+
+
+        Based on [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457)'
+      required:
+      - type
+      - title
+      - status
+      properties:
+        detail:
+          type:
+          - string
+          - 'null'
+          description: Optional details about the error
+          example: 'Low Level OS Error #1234'
+        instance:
+          type:
+          - string
+          - 'null'
+          format: uri-reference
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: null
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code generated by the origin server for this occurrence of the problem
+          example: 500
+          maximum: 599
+          minimum: 100
+        title:
+          type: string
+          description: Human-readable error message.
+          example: Something went wrong in the backend.
+        type:
+          type: string
+          format: uri-reference
+          description: 'A URI reference that identifies the problem type
+
+
+            The last part of the URI is always a `ErrorId`'
+          example: /u-os-adm/api/v1/errors/set-security-settings
+    Ipv4PrefixLength:
+      type: integer
+      format: int32
+      examples:
+      - '24'
+      maximum: 32
+      minimum: 0
     InterfaceFailoverState:
       type: object
       description: Failover state of a single interface exposed via the network state endpoint.
@@ -357,33 +401,43 @@ components:
           format: int32
           description: Number of consecutive successful probes since the last failure.
           minimum: 0
-    Ipv4Route:
+    Ipv4String:
+      type: string
+      format: ipv4
+      description: Represents an IPv4 address in a string format.
+    InterfaceType:
+      type: string
+      description: The type of network interface.
+      enum:
+      - ETHERNET
+      - USB
+    DhcpIpv4Range:
       type: object
-      description: An IP route entry in the IPv4 routing table.
+      description: Represents a range of IPv4 addresses
       required:
-      - destination
-      - gateway
-      - interface
-      - metric
+      - start
+      - end
       properties:
-        destination:
-          $ref: '#/components/schemas/Ipv4Subnet'
-        gateway:
+        end:
           $ref: '#/components/schemas/Ipv4String'
-        interface:
-          type: string
-          example: eth-x4
-        metric:
-          type: integer
-          format: int32
-          example: 103
-          minimum: 0
-    PartialServiceInterfaceConfig:
+          description: End of the range (inclusive)
+        start:
+          $ref: '#/components/schemas/Ipv4String'
+          description: Start of the range (inclusive)
+    Ipv4Subnet:
       type: object
-      description: Represents the configuration of the service interface. (PATCH)
+      description: 'Ipv4 address with prefix length.
+
+
+        The prefix length is used to determine the network mask.'
+      required:
+      - ip
+      - prefix_length
       properties:
-        enabled:
-          type: boolean
+        ip:
+          $ref: '#/components/schemas/Ipv4String'
+        prefix_length:
+          $ref: '#/components/schemas/Ipv4PrefixLength'
     PartialFailoverInterfaceConfig:
       type: object
       description: "Failover configuration for a single monitored interface.\n\n When enabled, the probe loop checks connectivity on this interface. If\n `failure_threshold` consecutive probes fail the interface is penalised by\n settings its active metric to `failed_metric`. Once `success_threshold`\n consecutive probes succeed the metric is restored to the interface's\n configured `metric` value. (PATCH)"
@@ -403,37 +457,21 @@ components:
         probe_target:
           $ref: '#/components/schemas/ProbeTarget'
           description: Probe target for connectivity checks (IPv4 address or hostname, optionally with port e.g. "1.1.1.1:5000").
-    DhcpIpv4Range:
-      type: object
-      description: Represents a range of IPv4 addresses
-      required:
-      - start
-      - end
-      properties:
-        end:
-          $ref: '#/components/schemas/Ipv4String'
-          description: End of the range (inclusive)
-        start:
-          $ref: '#/components/schemas/Ipv4String'
-          description: Start of the range (inclusive)
-    Ipv4String:
+    ProbeTarget:
       type: string
-      format: ipv4
-      description: Represents an IPv4 address in a string format.
-    Ipv4Subnet:
+      description: IPv4 address or hostname used as the probe target, optionally with a port (e.g. "1.1.1.1:5000"). If no port is specified, port 443 is used. IPv4 addresses are recommended for deterministic failover behavior. Hostname targets require DNS resolution before probing; DNS failures cause the probe to fail.
+      examples:
+      - 8.8.8.8
+      - 1.1.1.1:5000
+      - example.com
+      maxLength: 253
+      minLength: 1
+    PartialServiceInterfaceConfig:
       type: object
-      description: 'Ipv4 address with prefix length.
-
-
-        The prefix length is used to determine the network mask.'
-      required:
-      - ip
-      - prefix_length
+      description: Represents the configuration of the service interface. (PATCH)
       properties:
-        ip:
-          $ref: '#/components/schemas/Ipv4String'
-        prefix_length:
-          $ref: '#/components/schemas/Ipv4PrefixLength'
+        enabled:
+          type: boolean
     PartialSharedModeConfig:
       type: object
       description: Configuration options for interface sharing (PATCH)
@@ -487,141 +525,72 @@ components:
       properties:
         enabled:
           type: boolean
-    HttpErrorPayload:
+    InterfaceProbeState:
+      type: string
+      description: 'The current failover probe state of a monitored interface.
+
+
+        - `HEALTHY`: Enabled and passing probes.
+
+        - `PROBING`: Transitional state on the path to failure or recovery.
+
+        - `FAILED`: Penalised — using an elevated metric because probes are failing.'
+      enum:
+      - HEALTHY
+      - PROBING
+      - FAILED
+    FailoverInterfaceConfig:
       type: object
-      description: 'Common error payload structure for HTTP responses.
+      description: 'Failover configuration for a single monitored interface.
 
 
-        Based on [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457)'
+        When enabled, the probe loop checks connectivity on this interface. If
+
+        `failure_threshold` consecutive probes fail the interface is penalised by
+
+        settings its active metric to `failed_metric`. Once `success_threshold`
+
+        consecutive probes succeed the metric is restored to the interface''s
+
+        configured `metric` value.'
       required:
-      - type
-      - title
-      - status
+      - enabled
+      - probe_target
+      - failed_metric
       properties:
-        detail:
-          type:
-          - string
-          - 'null'
-          description: Optional details about the error
-          example: 'Low Level OS Error #1234'
-        instance:
-          type:
-          - string
-          - 'null'
-          format: uri-reference
-          description: A human-readable explanation specific to this occurrence of the problem
-          example: null
-        status:
+        enabled:
+          type: boolean
+          description: Whether failover probing is enabled for this interface.
+        failed_metric:
           type: integer
           format: int32
-          description: The HTTP status code generated by the origin server for this occurrence of the problem
-          example: 500
-          maximum: 599
-          minimum: 100
-        title:
-          type: string
-          description: Human-readable error message.
-          example: Something went wrong in the backend.
-        type:
-          type: string
-          format: uri-reference
-          description: 'A URI reference that identifies the problem type
+          description: 'Network interface metric (priority) that is applied when the interface has failed probing.
 
-
-            The last part of the URI is always a `ErrorId`'
-          example: /u-os-adm/api/v1/errors/set-security-settings
-    PartialFailoverGlobalConfig:
+            Should be higher than all normal interface metrics to ensure traffic is routed through healthy interfaces.'
+          example: 20000
+          maximum: 2147483647
+          minimum: 1
+        probe_target:
+          $ref: '#/components/schemas/ProbeTarget'
+          description: Probe target for connectivity checks (IPv4 address or hostname, optionally with port e.g. "1.1.1.1:5000").
+    InterfaceConfig:
       type: object
-      description: "Global failover configuration.\n\n Controls the probe loop that monitors all configured interfaces and adjusts\n their route metrics based on connectivity probe results. (PATCH)"
-      properties:
-        failure_threshold:
-          type: integer
-          format: int32
-          description: Number of consecutive failed probes before an interface is considered failed and penalised.
-          example: 3
-          minimum: 1
-        probe_interval_seconds:
-          type: integer
-          format: int64
-          description: Interval between failover probes in seconds.
-          example: 10
-          minimum: 1
-        success_threshold:
-          type: integer
-          format: int32
-          description: Number of consecutive successful probes before an interface is considered healthy and unpenalised.
-          example: 3
-          minimum: 1
-    GlobalDnsServers:
-      type: object
-      description: 'Represents the global DNS servers used by the system.
-
-
-        The order of the servers represents their priority, with the first one being the primary DNS server unless an interface overrides it.'
+      description: Represents the configuration of a single network interface.
       required:
-      - servers
-      - searches
+      - ipv4_config
       properties:
-        searches:
-          type: array
-          items:
-            type: string
-          example:
-          - .
-        servers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ipv4String'
-    FailoverGlobalConfig:
+        enabled:
+          type: boolean
+        ipv4_config:
+          $ref: '#/components/schemas/Ipv4Config'
+    Ipv4Config:
       type: object
-      description: 'Global failover configuration.
-
-
-        Controls the probe loop that monitors all configured interfaces and adjusts
-
-        their route metrics based on connectivity probe results.'
+      description: Represents the IPv4 configuration of a network interface.
       required:
-      - probe_interval_seconds
-      - failure_threshold
-      - success_threshold
-      properties:
-        failure_threshold:
-          type: integer
-          format: int32
-          description: Number of consecutive failed probes before an interface is considered failed and penalised.
-          example: 3
-          minimum: 1
-        probe_interval_seconds:
-          type: integer
-          format: int64
-          description: Interval between failover probes in seconds.
-          example: 10
-          minimum: 1
-        success_threshold:
-          type: integer
-          format: int32
-          description: Number of consecutive successful probes before an interface is considered healthy and unpenalised.
-          example: 3
-          minimum: 1
-    InterfaceState:
-      type: object
-      description: Represents the current state of a network interface.
-      required:
-      - type
-      - ipv4
-      properties:
-        failover:
-          oneOf:
-          - type: 'null'
-          - $ref: '#/components/schemas/InterfaceFailoverState'
-            description: Failover state, present only when failover is configured globally.
-        ipv4:
-          $ref: '#/components/schemas/Ipv4State'
-        type:
-          $ref: '#/components/schemas/InterfaceType'
-    PartialIpv4Config:
-      type: object
-      description: Represents the IPv4 configuration of a network interface. (PATCH)
+      - dhcp
+      - addresses
+      - gateway
+      - dns
       properties:
         addresses:
           type: array
@@ -634,7 +603,7 @@ components:
           items:
             $ref: '#/components/schemas/Ipv4String'
         failover:
-          $ref: '#/components/schemas/PartialFailoverInterfaceConfig'
+          $ref: '#/components/schemas/FailoverInterfaceConfig'
         gateway:
           oneOf:
           - type: 'null'
@@ -656,7 +625,57 @@ components:
           maximum: 2147483647
           minimum: -1
         shared_mode:
-          $ref: '#/components/schemas/PartialSharedModeConfig'
+          $ref: '#/components/schemas/SharedModeConfig'
+    InterfaceState:
+      type: object
+      description: Represents the current state of a network interface.
+      required:
+      - type
+      - ipv4
+      properties:
+        failover:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/InterfaceFailoverState'
+            description: Failover state, present only when failover is configured globally.
+        ipv4:
+          $ref: '#/components/schemas/Ipv4State'
+        type:
+          $ref: '#/components/schemas/InterfaceType'
+    PartialNetworkConfig:
+      type: object
+      description: Used for writing the network configuration. All fields are required to be present, but can be empty in some cases. (PATCH)
+      properties:
+        failover:
+          $ref: '#/components/schemas/PartialFailoverGlobalConfig'
+          description: Global failover probe settings.
+        hostname:
+          type: string
+          format: hostname
+          example: wm-uc20-m3000
+          maxLength: 63
+          minLength: 1
+        interfaces:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PartialInterfaceConfig'
+          propertyNames:
+            type: string
+          example:
+            eth-x4:
+              ipv4_config:
+                dhcp: false
+                gateway: null
+                shared_mode:
+                  enabled: true
+            eth-x5:
+              enabled: true
+              ipv4_config:
+                dhcp: true
+        service_interface:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/PartialServiceInterfaceConfig'
     NetworkConfig:
       type: object
       description: Used for writing the network configuration. All fields are required to be present, but can be empty in some cases.
@@ -721,52 +740,9 @@ components:
           oneOf:
           - type: 'null'
           - $ref: '#/components/schemas/ServiceInterfaceConfig'
-    NetworkState:
+    PartialIpv4Config:
       type: object
-      description: 'The current network state on the device.
-
-
-        Note that this may differ from the configuration, e.g. a DHCP interface has an address in the state, but not in the configuration.'
-      required:
-      - dns_resolver
-      - routes
-      - interfaces
-      properties:
-        dns_resolver:
-          $ref: '#/components/schemas/GlobalDnsServers'
-        interfaces:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/InterfaceState'
-          propertyNames:
-            type: string
-          example:
-            eth-x4:
-              ipv4:
-                activated: true
-                addresses:
-                - ip: 192.168.1.100
-                  prefix_length: 24
-              type: ETHERNET
-            eth-x5:
-              ipv4:
-                activated: true
-                addresses:
-                - ip: 192.168.1.101
-                  prefix_length: 24
-              type: ETHERNET
-        routes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ipv4Route'
-    Ipv4Config:
-      type: object
-      description: Represents the IPv4 configuration of a network interface.
-      required:
-      - dhcp
-      - addresses
-      - gateway
-      - dns
+      description: Represents the IPv4 configuration of a network interface. (PATCH)
       properties:
         addresses:
           type: array
@@ -779,7 +755,7 @@ components:
           items:
             $ref: '#/components/schemas/Ipv4String'
         failover:
-          $ref: '#/components/schemas/FailoverInterfaceConfig'
+          $ref: '#/components/schemas/PartialFailoverInterfaceConfig'
         gateway:
           oneOf:
           - type: 'null'
@@ -801,33 +777,51 @@ components:
           maximum: 2147483647
           minimum: -1
         shared_mode:
-          $ref: '#/components/schemas/SharedModeConfig'
-    Ipv4PrefixLength:
-      type: integer
-      format: int32
-      examples:
-      - '24'
-      maximum: 32
-      minimum: 0
-    ProbeTarget:
-      type: string
-      description: IPv4 address or hostname used as the probe target, optionally with a port (e.g. "1.1.1.1:5000"). If no port is specified, port 443 is used. IPv4 addresses are recommended for deterministic failover behavior. Hostname targets require DNS resolution before probing; DNS failures cause the probe to fail.
-      examples:
-      - 8.8.8.8
-      - 1.1.1.1:5000
-      - example.com
-      maxLength: 253
-      minLength: 1
-    PartialDhcpIpv4Range:
+          $ref: '#/components/schemas/PartialSharedModeConfig'
+    FailoverGlobalConfig:
       type: object
-      description: Represents a range of IPv4 addresses (PATCH)
+      description: 'Global failover configuration.
+
+
+        Controls the probe loop that monitors all configured interfaces and adjusts
+
+        their route metrics based on connectivity probe results.'
+      required:
+      - probe_interval_seconds
+      - failure_threshold
+      - success_threshold
       properties:
-        end:
-          $ref: '#/components/schemas/Ipv4String'
-          description: End of the range (inclusive)
-        start:
-          $ref: '#/components/schemas/Ipv4String'
-          description: Start of the range (inclusive)
+        failure_threshold:
+          type: integer
+          format: int32
+          description: Number of consecutive failed probes before an interface is considered failed and penalised.
+          example: 3
+          minimum: 1
+        probe_interval_seconds:
+          type: integer
+          format: int64
+          description: Interval between failover probes in seconds.
+          example: 10
+          minimum: 1
+        success_threshold:
+          type: integer
+          format: int32
+          description: Number of consecutive successful probes before an interface is considered healthy and unpenalised.
+          example: 3
+          minimum: 1
+    Ipv4State:
+      type: object
+      description: Represents the IPv4 state of a network interface.
+      required:
+      - activated
+      properties:
+        activated:
+          type: boolean
+          description: Activated is true when the connection is active and a cable is plugged in. Otherwise false.
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ipv4Subnet'
   securitySchemes:
     OAuth2:
       type: oauth2
@@ -856,6 +850,3 @@ components:
             u-os-adm.update.readonly: Read access for update endpoints
             u-os-adm.update.readwrite: Read and write access for update endpoints
       description: The HTTP API uses the OAuth2 client credentials flow.
-x-refined-from:
-- administration-openapi.yaml
-- weidmueller-administration-openapi.yml

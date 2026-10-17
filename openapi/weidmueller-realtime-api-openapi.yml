@@ -1,13 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Weidmueller Realtime API
-  version: 1.5.0-next
+  title: Administration Realtime API
+  description: HTTP API for administrating a u-OS device.
   contact:
     name: Weidmüller
   license:
     name: MIT
     identifier: MIT
-  description: 'Operations tagged realtime across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 1.5.0-next
 servers:
 - url: /u-os-adm/api/v1
 tags:
@@ -70,8 +70,6 @@ paths:
       security:
       - OAuth2:
         - u-os-adm.realtime.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
   /realtime/state:
     get:
       tags:
@@ -99,34 +97,22 @@ paths:
         - u-os-adm.realtime.readonly
       - OAuth2:
         - u-os-adm.realtime.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
 components:
   schemas:
-    CpuIsolationState:
+    RealtimeState:
+      type: object
+      required:
+      - cpu_isolation
+      properties:
+        cpu_isolation:
+          $ref: '#/components/schemas/CpuIsolationState'
+    CpuIsolationConfig:
       type: object
       required:
       - enabled
-      - effective_cpus
       properties:
-        effective_cpus:
-          type: array
-          items:
-            type: integer
-            format: int32
-            minimum: 0
-          description: 'Lists the CPU cores effectively used for real-time tasks when CPU isolation is enabled.
-
-            CPU core numbers are zero-based. For example, `[3]` means that only the fourth CPU core is used for real-time tasks.'
-          example:
-          - 1
         enabled:
           type: boolean
-          description: 'Indicates whether CPU isolation is currently active.
-
-            This reflects the current system state, not the desired state after a reboot.
-
-            To view the desired state after a reboot, use the realtime configuration endpoint.'
     HttpErrorPayload:
       type: object
       description: 'Common error payload structure for HTTP responses.
@@ -170,20 +156,30 @@ components:
 
             The last part of the URI is always a `ErrorId`'
           example: /u-os-adm/api/v1/errors/set-security-settings
-    RealtimeState:
-      type: object
-      required:
-      - cpu_isolation
-      properties:
-        cpu_isolation:
-          $ref: '#/components/schemas/CpuIsolationState'
-    CpuIsolationConfig:
+    CpuIsolationState:
       type: object
       required:
       - enabled
+      - effective_cpus
       properties:
+        effective_cpus:
+          type: array
+          items:
+            type: integer
+            format: int32
+            minimum: 0
+          description: 'Lists the CPU cores effectively used for real-time tasks when CPU isolation is enabled.
+
+            CPU core numbers are zero-based. For example, `[3]` means that only the fourth CPU core is used for real-time tasks.'
+          example:
+          - 1
         enabled:
           type: boolean
+          description: 'Indicates whether CPU isolation is currently active.
+
+            This reflects the current system state, not the desired state after a reboot.
+
+            To view the desired state after a reboot, use the realtime configuration endpoint.'
     RealtimeConfig:
       type: object
       required:
@@ -219,6 +215,3 @@ components:
             u-os-adm.update.readonly: Read access for update endpoints
             u-os-adm.update.readwrite: Read and write access for update endpoints
       description: The HTTP API uses the OAuth2 client credentials flow.
-x-refined-from:
-- administration-openapi.yaml
-- weidmueller-administration-openapi.yml

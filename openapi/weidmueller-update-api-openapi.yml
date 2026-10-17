@@ -1,13 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Weidmueller Update API
-  version: 1.5.0-next
+  title: Administration Update API
+  description: HTTP API for administrating a u-OS device.
   contact:
     name: Weidmüller
   license:
     name: MIT
     identifier: MIT
-  description: 'Operations tagged update across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 1.5.0-next
 servers:
 - url: /u-os-adm/api/v1
 tags:
@@ -102,24 +102,8 @@ paths:
       security:
       - OAuth2:
         - u-os-adm.update.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
 components:
   schemas:
-    PartialRemovableMediaUpdateConfig:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: 'True if removable media updates are enabled, false otherwise.
-
-
-            Note: Removable media updates are always enabled before initial setup is complete.
-
-            This value shows only the state after the initial setup.'
-        recipe_signing:
-          $ref: '#/components/schemas/PartialRecipeSigning'
-          description: Settings related to signing of removable media updates.
     GpgKey:
       type: object
       description: The content of a GPG public key file in ASCII armor format.
@@ -135,20 +119,23 @@ components:
             ...
 
             -----END PGP PUBLIC KEY BLOCK-----'
-    PartialSignedUpdateConfig:
+    PartialRecipeSigning:
       type: object
       properties:
         enabled:
           type: boolean
-          description: True if signed updates are enabled, false otherwise.
-        preinstalled_gpg_keys:
-          $ref: '#/components/schemas/PartialPreinstalledGpgKeysEnabled'
-          description: 'Can be used to enable or disable preinstalled Preinstalled GPG keys.
+          description: 'True if removable media update signing is enabled, false otherwise.
 
-            This can be useful e.g. to only allow custom, self signed updates to the device.'
+
+            If enabled, the recipe file of the removable media update must be signed with a GPG key that
+
+            is added to the `user_gpg_keys` list in order to be accepted by the system.
+
+
+            Note: Removable media update signing is always disabled before initial setup is complete.'
         user_gpg_keys:
           type: object
-          description: User specific GPG public keys that are used to verify software updates.
+          description: User specific GPG public keys that are used to verify removable media updates.
           additionalProperties: true
           example:
             another-gpg-key:
@@ -159,10 +146,47 @@ components:
 
                 -----END PGP PUBLIC KEY BLOCK-----'
             delete-me: null
-    PreinstalledGpgKeysEnabled:
+    PartialRemovableMediaUpdateConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: 'True if removable media updates are enabled, false otherwise.
+
+
+            Note: Removable media updates are always enabled before initial setup is complete.
+
+            This value shows only the state after the initial setup.'
+        recipe_signing:
+          $ref: '#/components/schemas/PartialRecipeSigning'
+          description: Settings related to signing of removable media updates.
+    RemovableMediaUpdateConfig:
       type: object
       required:
       - enabled
+      - recipe_signing
+      properties:
+        enabled:
+          type: boolean
+          description: 'True if removable media updates are enabled, false otherwise.
+
+
+            Note: Removable media updates are always enabled before initial setup is complete.
+
+            This value shows only the state after the initial setup.'
+        recipe_signing:
+          $ref: '#/components/schemas/RecipeSigning'
+          description: Settings related to signing of removable media updates.
+    PartialUpdateSettings:
+      type: object
+      description: Represents the update configuration for the system used in get and put. (PATCH)
+      properties:
+        removable_media_update:
+          $ref: '#/components/schemas/PartialRemovableMediaUpdateConfig'
+        signed_update:
+          $ref: '#/components/schemas/PartialSignedUpdateConfig'
+    PartialPreinstalledGpgKeysEnabled:
+      type: object
       properties:
         enabled:
           type: boolean
@@ -174,14 +198,6 @@ components:
             If this is set to false, those keys will be ignored during update verification.
 
             User must upload their own GPG keys to verify updates in this case.'
-    PartialUpdateSettings:
-      type: object
-      description: Represents the update configuration for the system used in get and put. (PATCH)
-      properties:
-        removable_media_update:
-          $ref: '#/components/schemas/PartialRemovableMediaUpdateConfig'
-        signed_update:
-          $ref: '#/components/schemas/PartialSignedUpdateConfig'
     SignedUpdateConfig:
       type: object
       required:
@@ -216,23 +232,44 @@ components:
                 ...
 
                 -----END PGP PUBLIC KEY BLOCK-----'
-    RemovableMediaUpdateConfig:
+    RecipeSigning:
       type: object
       required:
       - enabled
-      - recipe_signing
+      - user_gpg_keys
       properties:
         enabled:
           type: boolean
-          description: 'True if removable media updates are enabled, false otherwise.
+          description: 'True if removable media update signing is enabled, false otherwise.
 
 
-            Note: Removable media updates are always enabled before initial setup is complete.
+            If enabled, the recipe file of the removable media update must be signed with a GPG key that
 
-            This value shows only the state after the initial setup.'
-        recipe_signing:
-          $ref: '#/components/schemas/RecipeSigning'
-          description: Settings related to signing of removable media updates.
+            is added to the `user_gpg_keys` list in order to be accepted by the system.
+
+
+            Note: Removable media update signing is always disabled before initial setup is complete.'
+        user_gpg_keys:
+          type: object
+          description: User specific GPG public keys that are used to verify removable media updates.
+          additionalProperties:
+            $ref: '#/components/schemas/GpgKey'
+          propertyNames:
+            type: string
+            description: A GPG key ID that acts as a unique identifier for the key
+            examples:
+            - custom-gpg-key
+            maxLength: 255
+            minLength: 1
+            pattern: ^[a-z][a-z\-0-9]*$
+          example:
+            another-gpg-key:
+              content: '-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+
+                ...
+
+                -----END PGP PUBLIC KEY BLOCK-----'
     HttpErrorPayload:
       type: object
       description: 'Common error payload structure for HTTP responses.
@@ -276,73 +313,10 @@ components:
 
             The last part of the URI is always a `ErrorId`'
           example: /u-os-adm/api/v1/errors/set-security-settings
-    PartialRecipeSigning:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: 'True if removable media update signing is enabled, false otherwise.
-
-
-            If enabled, the recipe file of the removable media update must be signed with a GPG key that
-
-            is added to the `user_gpg_keys` list in order to be accepted by the system.
-
-
-            Note: Removable media update signing is always disabled before initial setup is complete.'
-        user_gpg_keys:
-          type: object
-          description: User specific GPG public keys that are used to verify removable media updates.
-          additionalProperties: true
-          example:
-            another-gpg-key:
-              content: '-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-
-                ...
-
-                -----END PGP PUBLIC KEY BLOCK-----'
-            delete-me: null
-    RecipeSigning:
+    PreinstalledGpgKeysEnabled:
       type: object
       required:
       - enabled
-      - user_gpg_keys
-      properties:
-        enabled:
-          type: boolean
-          description: 'True if removable media update signing is enabled, false otherwise.
-
-
-            If enabled, the recipe file of the removable media update must be signed with a GPG key that
-
-            is added to the `user_gpg_keys` list in order to be accepted by the system.
-
-
-            Note: Removable media update signing is always disabled before initial setup is complete.'
-        user_gpg_keys:
-          type: object
-          description: User specific GPG public keys that are used to verify removable media updates.
-          additionalProperties:
-            $ref: '#/components/schemas/GpgKey'
-          propertyNames:
-            type: string
-            description: A GPG key ID that acts as a unique identifier for the key
-            examples:
-            - custom-gpg-key
-            maxLength: 255
-            minLength: 1
-            pattern: ^[a-z][a-z\-0-9]*$
-          example:
-            another-gpg-key:
-              content: '-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-
-                ...
-
-                -----END PGP PUBLIC KEY BLOCK-----'
-    PartialPreinstalledGpgKeysEnabled:
-      type: object
       properties:
         enabled:
           type: boolean
@@ -354,6 +328,30 @@ components:
             If this is set to false, those keys will be ignored during update verification.
 
             User must upload their own GPG keys to verify updates in this case.'
+    PartialSignedUpdateConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: True if signed updates are enabled, false otherwise.
+        preinstalled_gpg_keys:
+          $ref: '#/components/schemas/PartialPreinstalledGpgKeysEnabled'
+          description: 'Can be used to enable or disable preinstalled Preinstalled GPG keys.
+
+            This can be useful e.g. to only allow custom, self signed updates to the device.'
+        user_gpg_keys:
+          type: object
+          description: User specific GPG public keys that are used to verify software updates.
+          additionalProperties: true
+          example:
+            another-gpg-key:
+              content: '-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+
+                ...
+
+                -----END PGP PUBLIC KEY BLOCK-----'
+            delete-me: null
     UpdateSettings:
       type: object
       description: Represents the update configuration for the system used in get and put.
@@ -392,6 +390,3 @@ components:
             u-os-adm.update.readonly: Read access for update endpoints
             u-os-adm.update.readwrite: Read and write access for update endpoints
       description: The HTTP API uses the OAuth2 client credentials flow.
-x-refined-from:
-- administration-openapi.yaml
-- weidmueller-administration-openapi.yml

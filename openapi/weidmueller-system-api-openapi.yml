@@ -1,13 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Weidmueller System API
-  version: 1.5.0-next
+  title: Administration System API
+  description: HTTP API for administrating a u-OS device.
   contact:
     name: Weidmüller
   license:
     name: MIT
     identifier: MIT
-  description: 'Operations tagged system across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 1.5.0-next
 servers:
 - url: /u-os-adm/api/v1
 tags:
@@ -39,8 +39,6 @@ paths:
         - u-os-adm.system.readonly
       - OAuth2:
         - u-os-adm.system.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
   /system/info:
     get:
       tags:
@@ -68,8 +66,6 @@ paths:
         - u-os-adm.system.readonly
       - OAuth2:
         - u-os-adm.system.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
   /system/nameplate:
     get:
       tags:
@@ -95,8 +91,6 @@ paths:
         - u-os-adm.system.readonly
       - OAuth2:
         - u-os-adm.system.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
   /system:reboot:
     post:
       tags:
@@ -116,10 +110,30 @@ paths:
       security:
       - OAuth2:
         - u-os-adm.system.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
 components:
   schemas:
+    AddressInformation:
+      type: object
+      description: Contains the address information of the device. Part of the device nameplate.
+      required:
+      - Street
+      - Zipcode
+      - CityTown
+      - NationalCode
+      properties:
+        CityTown:
+          type: string
+        NationalCode:
+          type: string
+        Street:
+          type: string
+        Zipcode:
+          type: string
+    StorageType:
+      type: string
+      enum:
+      - Internal
+      - Removable
     Disks:
       type: object
       required:
@@ -129,63 +143,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Disk'
-    DeviceNameplate:
-      type: object
-      description: 'Contains the device nameplate information.
-
-
-        Based on [IDTA 02006-3-0 Digital Nameplate for industrial equipment specification](https://github.com/admin-shell-io/submodel-templates/tree/main/published/Digital%20nameplate/3/0)'
-      required:
-      - URIOfTheProduct
-      - ManufacturerName
-      - ManufacturerProductDesignation
-      - AddressInformation
-      - OrderCodeOfManufacturer
-      properties:
-        AddressInformation:
-          $ref: '#/components/schemas/AddressInformation'
-        HardwareVersion:
-          type:
-          - string
-          - 'null'
-        ManufacturerName:
-          type: string
-        ManufacturerProductDesignation:
-          type: string
-        ManufacturerProductType:
-          type:
-          - string
-          - 'null'
-        OrderCodeOfManufacturer:
-          type: string
-        SerialNumber:
-          type:
-          - string
-          - 'null'
-        SoftwareVersion:
-          type:
-          - string
-          - 'null'
-        URIOfTheProduct:
-          type: string
-        YearOfConstruction:
-          type:
-          - string
-          - 'null'
-    Memory:
+    Firmware:
       type: object
       required:
-      - total_size
-      - available_size
+      - name
+      - version
       properties:
-        available_size:
-          type: integer
-          format: int64
-          minimum: 0
-        total_size:
-          type: integer
-          format: int64
-          minimum: 0
+        name:
+          type: string
+        version:
+          type: string
     HttpErrorPayload:
       type: object
       description: 'Common error payload structure for HTTP responses.
@@ -229,34 +196,6 @@ components:
 
             The last part of the URI is always a `ErrorId`'
           example: /u-os-adm/api/v1/errors/set-security-settings
-    Firmware:
-      type: object
-      required:
-      - name
-      - version
-      properties:
-        name:
-          type: string
-        version:
-          type: string
-    SystemInformation:
-      type: object
-      required:
-      - cpu_architecture
-      - firmware
-      - memory
-      properties:
-        cpu_architecture:
-          type: string
-        firmware:
-          $ref: '#/components/schemas/Firmware'
-        memory:
-          $ref: '#/components/schemas/Memory'
-    StorageType:
-      type: string
-      enum:
-      - Internal
-      - Removable
     Disk:
       type: object
       required:
@@ -285,23 +224,76 @@ components:
           type: integer
           format: int64
           minimum: 0
-    AddressInformation:
+    Memory:
       type: object
-      description: Contains the address information of the device. Part of the device nameplate.
       required:
-      - Street
-      - Zipcode
-      - CityTown
-      - NationalCode
+      - total_size
+      - available_size
       properties:
-        CityTown:
+        available_size:
+          type: integer
+          format: int64
+          minimum: 0
+        total_size:
+          type: integer
+          format: int64
+          minimum: 0
+    SystemInformation:
+      type: object
+      required:
+      - cpu_architecture
+      - firmware
+      - memory
+      properties:
+        cpu_architecture:
           type: string
-        NationalCode:
+        firmware:
+          $ref: '#/components/schemas/Firmware'
+        memory:
+          $ref: '#/components/schemas/Memory'
+    DeviceNameplate:
+      type: object
+      description: 'Contains the device nameplate information.
+
+
+        Based on [IDTA 02006-3-0 Digital Nameplate for industrial equipment specification](https://github.com/admin-shell-io/submodel-templates/tree/main/published/Digital%20nameplate/3/0)'
+      required:
+      - URIOfTheProduct
+      - ManufacturerName
+      - ManufacturerProductDesignation
+      - AddressInformation
+      - OrderCodeOfManufacturer
+      properties:
+        AddressInformation:
+          $ref: '#/components/schemas/AddressInformation'
+        HardwareVersion:
+          type:
+          - string
+          - 'null'
+        ManufacturerName:
           type: string
-        Street:
+        ManufacturerProductDesignation:
           type: string
-        Zipcode:
+        ManufacturerProductType:
+          type:
+          - string
+          - 'null'
+        OrderCodeOfManufacturer:
           type: string
+        SerialNumber:
+          type:
+          - string
+          - 'null'
+        SoftwareVersion:
+          type:
+          - string
+          - 'null'
+        URIOfTheProduct:
+          type: string
+        YearOfConstruction:
+          type:
+          - string
+          - 'null'
   securitySchemes:
     OAuth2:
       type: oauth2
@@ -330,6 +322,3 @@ components:
             u-os-adm.update.readonly: Read access for update endpoints
             u-os-adm.update.readwrite: Read and write access for update endpoints
       description: The HTTP API uses the OAuth2 client credentials flow.
-x-refined-from:
-- administration-openapi.yaml
-- weidmueller-administration-openapi.yml

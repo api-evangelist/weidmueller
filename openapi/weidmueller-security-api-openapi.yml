@@ -1,13 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Weidmueller Security API
-  version: 1.5.0-next
+  title: Administration Security API
+  description: HTTP API for administrating a u-OS device.
   contact:
     name: Weidmüller
   license:
     name: MIT
     identifier: MIT
-  description: 'Operations tagged security across 2 of this provider''s published API definitions: administration-openapi.yaml, weidmueller-administration-openapi.yml. Each path carries the servers of the definition it was published in.'
+  version: 1.5.0-next
 servers:
 - url: /u-os-adm/api/v1
 tags:
@@ -68,17 +68,15 @@ paths:
       security:
       - OAuth2:
         - u-os-adm.security.readwrite
-    servers:
-    - url: /u-os-adm/api/v1
 components:
   schemas:
-    RootAccessConfig:
+    SecuritySettings:
       type: object
       required:
-      - enabled
+      - root_access
       properties:
-        enabled:
-          type: boolean
+        root_access:
+          $ref: '#/components/schemas/RootAccessConfig'
     HttpErrorPayload:
       type: object
       description: 'Common error payload structure for HTTP responses.
@@ -122,13 +120,13 @@ components:
 
             The last part of the URI is always a `ErrorId`'
           example: /u-os-adm/api/v1/errors/set-security-settings
-    SecuritySettings:
+    RootAccessConfig:
       type: object
       required:
-      - root_access
+      - enabled
       properties:
-        root_access:
-          $ref: '#/components/schemas/RootAccessConfig'
+        enabled:
+          type: boolean
   securitySchemes:
     OAuth2:
       type: oauth2
@@ -157,6 +155,3 @@ components:
             u-os-adm.update.readonly: Read access for update endpoints
             u-os-adm.update.readwrite: Read and write access for update endpoints
       description: The HTTP API uses the OAuth2 client credentials flow.
-x-refined-from:
-- administration-openapi.yaml
-- weidmueller-administration-openapi.yml

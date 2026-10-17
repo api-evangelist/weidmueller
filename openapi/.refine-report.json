@@ -2,9 +2,7 @@
   "provider": "weidmueller",
   "sources": [
     "_original/administration-openapi.yaml",
-    "_original/variable-http-openapi.yaml",
-    "weidmueller-administration-openapi.yml",
-    "weidmueller-variable-http-openapi.yml"
+    "_original/variable-http-openapi.yaml"
   ],
   "outputs": [
     "weidmueller-firewall-api-openapi.yml",
@@ -24,33 +22,36 @@
     "weidmueller-consumer-api-openapi.yml"
   ],
   "archived": [
-    "archived openapi/weidmueller-administration-openapi.yml",
-    "archived openapi/weidmueller-variable-http-openapi.yml"
+    "deleted 1 superseded output(s) from the previous generation"
   ],
   "errors": [],
   "warnings": [],
   "notes": [
+    "2 archived document(s) dropped as subsets of other archived documents",
     "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "administration-openapi.yaml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "variable-http-openapi.yaml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "weidmueller-administration-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "weidmueller-variable-http-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "tag 'firewall' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'logging' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'network' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'openapi' spans 4 source specs (administration-openapi.yaml, variable-http-openapi.yaml, weidmueller-administration-openapi.yml, weidmueller-variable-http-openapi.yml): per-path servers applied",
-    "tag 'operations' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'ping' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'realtime' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'recovery' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'security' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'serial-interfaces' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'syslog' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'system' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'time' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'update' spans 2 source specs (administration-openapi.yaml, weidmueller-administration-openapi.yml): per-path servers applied",
-    "tag 'Consumer' spans 2 source specs (variable-http-openapi.yaml, weidmueller-variable-http-openapi.yml): per-path servers applied",
-    "apis.yml register: written (+15 apis, 16 total)"
+    "tag 'openapi' spans 2 source specs (administration-openapi.yaml, variable-http-openapi.yaml): per-path servers applied",
+    "superseded outputs removed: weidmueller-open-api-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 16 total)"
   ],
-  "skipped": []
+  "skipped": [
+    "_original/weidmueller-variable-http-openapi.yml: archived document superseded by a larger archived document",
+    "_original/weidmueller-administration-openapi.yml: archived document superseded by a larger archived document",
+    "weidmueller-consumer-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-firewall-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-logging-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-network-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-open-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-operations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-ping-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-realtime-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-recovery-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-security-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-serial-interfaces-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-syslog-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-system-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-time-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "weidmueller-update-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
