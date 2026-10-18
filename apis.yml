@@ -27,6 +27,14 @@ tags:
 - Industrial Automation
 - Industrial Connectivity
 - Edge Computing
+- Industrial IoT
+- u-OS
+- Manufacturing
+tags_raw:
+- Company
+- Industrial Automation
+- Industrial Connectivity
+- Edge Computing
 - IIoT
 - u-OS
 - Manufacturing
@@ -149,6 +157,8 @@ apis:
   description: API for firewall settings of u-OS
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
   tags:
+  - Firewall
+  tags_raw:
   - firewall
   properties:
   - type: OpenAPI
@@ -170,6 +180,8 @@ apis:
   description: Centralized system logging, capture and reporting API for u-OS
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
   tags:
+  - Logging
+  tags_raw:
   - logging
   properties:
   - type: OpenAPI
@@ -191,6 +203,8 @@ apis:
   description: API for network settings and state of u-OS
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
   tags:
+  - Networks
+  tags_raw:
   - network
   properties:
   - type: OpenAPI
@@ -211,7 +225,8 @@ apis:
   name: Weidmüller Operations API
   description: API for u-OS long running operations
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
-  tags:
+  tags: []
+  tags_raw:
   - operations
   properties:
   - type: OpenAPI
@@ -233,6 +248,8 @@ apis:
   description: API for checking the availability of u-os-adm
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
   tags:
+  - Ping
+  tags_raw:
   - ping
   properties:
   - type: OpenAPI
@@ -254,6 +271,8 @@ apis:
   description: API for u-OS realtime settings
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
   tags:
+  - Real-Time
+  tags_raw:
   - realtime
   properties:
   - type: OpenAPI
@@ -275,6 +294,8 @@ apis:
   description: API for recovery of u-OS
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
   tags:
+  - Recovery
+  tags_raw:
   - recovery
   properties:
   - type: OpenAPI
@@ -296,6 +317,8 @@ apis:
   description: API for u-OS security settings
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
   tags:
+  - Security
+  tags_raw:
   - security
   properties:
   - type: OpenAPI
@@ -338,6 +361,8 @@ apis:
   description: API for syslog forwarding configuration
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
   tags:
+  - Syslog
+  tags_raw:
   - syslog
   properties:
   - type: OpenAPI
@@ -359,6 +384,8 @@ apis:
   description: API for general system informations & actions of u-OS
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
   tags:
+  - System
+  tags_raw:
   - system
   properties:
   - type: OpenAPI
@@ -380,6 +407,8 @@ apis:
   description: API for time settings and time state of u-OS
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
   tags:
+  - Time
+  tags_raw:
   - time
   properties:
   - type: OpenAPI
@@ -400,7 +429,8 @@ apis:
   name: Weidmüller Update API
   description: API for u-OS update settings
   humanURL: https://github.com/weidmueller/u-os-hub-api/tree/main/openapi
-  tags:
+  tags: []
+  tags_raw:
   - update
   properties:
   - type: OpenAPI
@@ -422,6 +452,8 @@ apis:
   description: API for reading the OpenAPI specification
   humanURL: https://support.weidmueller.com/online-documentation/latest/312416/en-GB/142279051.html
   tags:
+  - OpenAPI
+  tags_raw:
   - Open API
   properties:
   - type: OpenAPI
